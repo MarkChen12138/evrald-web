@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { SuccessAlert } from "../../views/Components/Alert";
 
 // react-bootstrap components
 import {
@@ -23,6 +24,13 @@ function RegisterPage() {
       return (
         <>
           <Card className="card-plain">
+            <Card.Subtitle as="h6">如何获得公司邀请码？</Card.Subtitle>
+            <Card.Subtitle as="h5">
+              1. 请联系我们的客服，经过验证后，我们会为您提供公司邀请码
+            </Card.Subtitle>
+            <Card.Subtitle as="h5">
+              2. 请联系您的交易公司的负责人，获取公司邀请码
+            </Card.Subtitle>
             <div className="card-body">
               <Form.Group>
                 <Form.Control
@@ -31,6 +39,7 @@ function RegisterPage() {
                 ></Form.Control>
               </Form.Group>
             </div>
+
             <div className="card-footer text-center">
               <Button
                 className="btn-fill btn-neutral btn-wd"
@@ -51,9 +60,6 @@ function RegisterPage() {
         <>
           <Card className="card-plain">
             <div className="card-body">
-              <Form.Group>
-                <Form.Control placeholder="Company" type="email"></Form.Control>
-              </Form.Group>
               <Form.Group>
                 <Form.Control
                   placeholder="Enter email"
@@ -77,10 +83,75 @@ function RegisterPage() {
               <Button
                 className="btn-fill btn-neutral btn-wd"
                 type="submit"
-                onClick={() => setStep(1)}
+                onClick={() => setStep(2)}
                 variant="default"
               >
-                Create Free Account
+                下一步
+              </Button>
+            </div>
+          </Card>
+        </>
+      );
+    };
+
+    const Step3 = () => {
+      const [showAlert, setShowAlert] = useState(false);
+      const handleShowAlert = () => {
+        setShowAlert(true);
+      };
+
+      const handleHideAlert = () => {
+        setShowAlert(false);
+      };
+
+      return (
+        <>
+          <Card className="card-plain">
+            <div className="card-body">
+              <Form.Group>
+                <Form.Control placeholder="公司名称" type="text"></Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Control
+                  placeholder="营业执照号码"
+                  type="text"
+                ></Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Control
+                  placeholder="上传营业执照照片"
+                  type="file"
+                ></Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Control
+                  placeholder="法人名称"
+                  type="password"
+                ></Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Control
+                  placeholder="法人证件号码"
+                  type="password"
+                ></Form.Control>
+              </Form.Group>
+            </div>
+            <div className="card-footer text-center">
+              {showAlert && (
+                <SuccessAlert
+                  onConfirm={handleHideAlert}
+                  title={"账号创建成功"}
+                  text={
+                    "我们的客服在在核验中，核验通过后，我们会在24小时内通过邮件以及短信通知您"
+                  }
+                />
+              )}
+              <Button
+                className="btn-fill btn-neutral btn-wd"
+                onClick={handleShowAlert}
+                variant="default"
+              >
+                创建账号
               </Button>
             </div>
           </Card>
@@ -94,6 +165,7 @@ function RegisterPage() {
           <Form action="#" method="#">
             {step === 0 && <Step1 />}
             {step === 1 && <Step2 />}
+            {step === 2 && <Step3 />}
           </Form>
         </Col>
       </>
@@ -104,7 +176,7 @@ function RegisterPage() {
     <>
       <div
         className="full-page register-page section-image"
-        data-color="orange"
+        data-color="blue"
         data-image={require("assets/img/bg5.jpg")}
       >
         <div className="content d-flex align-items-center">
@@ -200,5 +272,9 @@ const LeftRegister = ({ step }) => {
     </>
   );
 };
+
+function RegiterCompletionAlert() {
+  const [alert, setAlert] = React.useState(null);
+}
 
 export default RegisterPage;

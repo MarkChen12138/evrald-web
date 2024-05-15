@@ -9,7 +9,7 @@ import {
   Navbar,
   Nav,
   Container,
-  Col
+  Col,
 } from "react-bootstrap";
 
 function LoginPage() {
@@ -37,16 +37,16 @@ function LoginPage() {
                   <Card.Body>
                     <Card.Body>
                       <Form.Group>
-                        <label>Email address</label>
+                        <label>手机号/邮箱</label>
                         <Form.Control
-                          placeholder="Enter email"
-                          type="email"
+                          placeholder="手机号/邮箱"
+                          type="text"
                         ></Form.Control>
                       </Form.Group>
                       <Form.Group>
-                        <label>Password</label>
+                        <label>密码</label>
                         <Form.Control
-                          placeholder="Password"
+                          placeholder="密码"
                           type="password"
                         ></Form.Control>
                       </Form.Group>
@@ -76,7 +76,7 @@ function LoginPage() {
           className="full-page-background"
           style={{
             backgroundImage:
-              "url(" + require("assets/img/full-screen-image-2.jpg") + ")"
+              "url(" + require("assets/img/full-screen-image-2.jpg") + ")",
           }}
         ></div>
       </div>

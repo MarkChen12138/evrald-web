@@ -9,7 +9,7 @@ import {
   Nav,
   Container,
   Col,
-  Form
+  Form,
 } from "react-bootstrap";
 
 function LockScreenPage() {
@@ -60,7 +60,7 @@ function LockScreenPage() {
         <div
           className="full-page-background"
           style={{
-            backgroundImage: "url(" + require("assets/img/bg4.jpg") + ")"
+            backgroundImage: "url(" + require("assets/img/bg4.jpg") + ")",
           }}
         ></div>
       </div>
