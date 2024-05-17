@@ -38,14 +38,22 @@ import UserPage from "views/Pages/UserPage.js";
 import LoginPage from "views/Pages/LoginPage.js";
 import RegisterPage from "views/Pages/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
+import Database from "views/Chains/Database";
 
 var routes = [
+  {
+    path: "/database",
+    layout: "/admin",
+    name: "Chain Database",
+    icon: "nc-icon nc-alien-33",
+    component: Database,
+  },
   {
     path: "/dashboard",
     layout: "/admin",
     name: "Dashboard",
     icon: "nc-icon nc-chart-pie-35",
-    component: Dashboard
+    component: Dashboard,
   },
   {
     collapse: true,
@@ -59,51 +67,51 @@ var routes = [
         layout: "/admin",
         name: "Buttons",
         mini: "B",
-        component: Buttons
+        component: Buttons,
       },
       {
         path: "/grid-system",
         layout: "/admin",
         name: "Grid System",
         mini: "GS",
-        component: GridSystem
+        component: GridSystem,
       },
       {
         path: "/panels",
         layout: "/admin",
         name: "Panels",
         mini: "P",
-        component: Panels
+        component: Panels,
       },
       {
         path: "/sweet-alert",
         layout: "/admin",
         name: "Sweet Alert",
         mini: "SA",
-        component: SweetAlert
+        component: SweetAlert,
       },
       {
         path: "/notifications",
         layout: "/admin",
         name: "Notifications",
         mini: "N",
-        component: Notifications
+        component: Notifications,
       },
       {
         path: "/icons",
         layout: "/admin",
         name: "Icons",
         mini: "I",
-        component: Icons
+        component: Icons,
       },
       {
         path: "/typography",
         layout: "/admin",
         name: "Typography",
         mini: "T",
-        component: Typography
-      }
-    ]
+        component: Typography,
+      },
+    ],
   },
   {
     collapse: true,
@@ -117,30 +125,30 @@ var routes = [
         layout: "/admin",
         name: "Regular Forms",
         mini: "RF",
-        component: RegularForms
+        component: RegularForms,
       },
       {
         path: "/extended-forms",
         layout: "/admin",
         name: "Extended Forms",
         mini: "EF",
-        component: ExtendedForms
+        component: ExtendedForms,
       },
       {
         path: "/validation-forms",
         layout: "/admin",
         name: "Validation Forms",
         mini: "VF",
-        component: ValidationForms
+        component: ValidationForms,
       },
       {
         path: "/wizard",
         layout: "/admin",
         name: "Wizard",
         mini: "W",
-        component: Wizard
-      }
-    ]
+        component: Wizard,
+      },
+    ],
   },
   {
     collapse: true,
@@ -154,23 +162,23 @@ var routes = [
         layout: "/admin",
         name: "Regular Tables",
         mini: "RT",
-        component: RegularTables
+        component: RegularTables,
       },
       {
         path: "/extended-tables",
         layout: "/admin",
         name: "Extended Tables",
         mini: "ET",
-        component: ExtendedTables
+        component: ExtendedTables,
       },
       {
         path: "/react-table",
         layout: "/admin",
         name: "React Table",
         mini: "RT",
-        component: ReactTables
-      }
-    ]
+        component: ReactTables,
+      },
+    ],
   },
   {
     collapse: true,
@@ -184,37 +192,37 @@ var routes = [
         layout: "/admin",
         name: "Google Maps",
         mini: "GM",
-        component: GoogleMaps
+        component: GoogleMaps,
       },
       {
         path: "/full-screen-maps",
         layout: "/admin",
         name: "Full Screen Map",
         mini: "FSM",
-        component: FullScreenMap
+        component: FullScreenMap,
       },
       {
         path: "/vector-maps",
         layout: "/admin",
         name: "Vector Map",
         mini: "VM",
-        component: VectorMap
-      }
-    ]
+        component: VectorMap,
+      },
+    ],
   },
   {
     path: "/charts",
     layout: "/admin",
     name: "Charts",
     icon: "nc-icon nc-chart-bar-32",
-    component: Charts
+    component: Charts,
   },
   {
     path: "/calendar",
     layout: "/admin",
     name: "Calendar",
     icon: "nc-icon nc-single-copy-04",
-    component: Calendar
+    component: Calendar,
   },
   {
     collapse: true,
@@ -228,30 +236,30 @@ var routes = [
         layout: "/admin",
         name: "User Page",
         mini: "UP",
-        component: UserPage
+        component: UserPage,
       },
       {
         path: "/login-page",
         layout: "/auth",
         name: "Login Page",
         mini: "LP",
-        component: LoginPage
+        component: LoginPage,
       },
       {
         path: "/register-page",
         layout: "/auth",
         name: "Register",
         mini: "RP",
-        component: RegisterPage
+        component: RegisterPage,
       },
       {
         path: "/lock-screen-page",
         layout: "/auth",
         name: "Lock Screen Page",
         mini: "LSP",
-        component: LockScreenPage
-      }
-    ]
-  }
+        component: LockScreenPage,
+      },
+    ],
+  },
 ];
 export default routes;
