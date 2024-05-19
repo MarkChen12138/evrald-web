@@ -38,7 +38,8 @@ import UserPage from "views/Pages/UserPage.js";
 import LoginPage from "views/Pages/LoginPage.js";
 import RegisterPage from "views/Pages/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
-import Database from "views/Chains/Database";
+import Database from "views/Database/Database";
+import UserProduct from "views/User/UserProduct";
 
 var routes = [
   {
@@ -47,6 +48,13 @@ var routes = [
     name: "Chain Database",
     icon: "nc-icon nc-alien-33",
     component: Database,
+  },
+  {
+    path: "/user-product",
+    layout: "/admin",
+    name: "User Product",
+    icon: "nc-icon nc-alien-33",
+    component: UserProduct,
   },
   {
     path: "/dashboard",

@@ -3,8 +3,8 @@ import React from "react";
 import ChartistGraph from "react-chartist";
 // react components used to create a SVG / Vector map
 import { VectorMap } from "react-jvectormap";
-import TagsInput from "components/TagsInput/TagsInput";
-import ReactTable from "components/ReactTable/ReactTable.js";
+import TagsInput from "../../components/TagsInput/TagsInput";
+import ReactTable from "../../components/ReactTable/ReactTable.js";
 // react-bootstrap components
 import {
   Badge,
@@ -67,7 +67,7 @@ const dataTable = [
   ["Olivia Liang", "Support Engineer", "Singapore", "64"],
 ];
 
-function Database() {
+function UserProduct() {
   const [data, setData] = React.useState(
     dataTable.map((prop, key) => {
       return {
@@ -299,4 +299,4 @@ const CompanyTableQuery = () => {
   );
 };
 
-export default Database;
+export default UserProduct;
