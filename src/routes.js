@@ -36,7 +36,7 @@ import Charts from "views/Charts.js";
 import Calendar from "views/Calendar.js";
 import UserPage from "views/Pages/UserPage.js";
 import LoginPage from "views/Pages/LoginPage.js";
-import RegisterPage from "views/Pages/RegisterPage.js";
+import RegisterPage from "views/Pages/RegisterPage/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 import Database from "views/Database/Database";
 import UserProduct from "views/User/UserProduct";

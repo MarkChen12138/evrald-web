@@ -43,16 +43,12 @@ function ValidationForms() {
   const [registerEmail, setRegisterEmail] = React.useState("");
   const [registerEmailState, setRegisterEmailState] = React.useState(true);
   const [registerPassword, setRegisterPassword] = React.useState("");
-  const [registerPasswordState, setRegisterPasswordState] = React.useState(
-    true
-  );
-  const [registerConfirmPassword, setRegisterConfirmPassword] = React.useState(
-    ""
-  );
-  const [
-    registerConfirmPasswordState,
-    setRegisterConfirmPasswordState,
-  ] = React.useState(true);
+  const [registerPasswordState, setRegisterPasswordState] =
+    React.useState(true);
+  const [registerConfirmPassword, setRegisterConfirmPassword] =
+    React.useState("");
+  const [registerConfirmPasswordState, setRegisterConfirmPasswordState] =
+    React.useState(true);
   const [loginEmail, setLoginEmail] = React.useState("");
   const [loginEmailState, setLoginEmailState] = React.useState(true);
   const [loginPassword, setLoginPassword] = React.useState("");
