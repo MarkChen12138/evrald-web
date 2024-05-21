@@ -13,22 +13,32 @@ import {
 } from "react-bootstrap";
 
 const Step4 = React.forwardRef((props, ref) => {
-  const [contactName, setContactName] = React.useState("");
-  const [contactNameError, setContactNameError] = React.useState(null);
-  const [contactPhoneNumber, setContactPhoneNumber] = React.useState("");
-  const [contactPhoneNumberError, setContactPhoneNumberError] =
+  const [legalName, setLegalName] = React.useState("");
+  const [legalNameError, setLegalNameError] = React.useState(null);
+  const [legalPhoneNumber, setLegalPhoneNumber] = React.useState("");
+  const [legalPhoneNumberError, setLegalPhoneNumberError] =
     React.useState(null);
-  const [contactCardNumber, setContactCardNumber] = React.useState("");
-  const [contactCardNumberError, setContactCardNumberError] =
-    React.useState(null);
+  const [legalCardNumber, setLegalCardNumber] = React.useState("");
+  const [legalCardNumberError, setLegalCardNumberError] = React.useState(null);
+  const [effectTime, setEffectTime] = React.useState("");
+  const [expireTime, setExpireTime] = React.useState("");
+
+  const handleInputSave = () => {
+    props.updateStep4Data({
+      card_type: cardType,
+      person_name: legalName,
+      card_no: legalCardNumber,
+      legal_cert_type: legalCertType,
+    });
+  };
 
   // 验证姓名
   const validateName = () => {
-    if (contactName.trim() === "") {
-      setContactNameError("联系人姓名不能为空");
+    if (legalName.trim() === "") {
+      setLegalNameError("法人姓名不能为空");
       return false;
     } else {
-      setContactNameError(null);
+      setLegalNameError(null);
       return true;
     }
   };
@@ -36,22 +46,22 @@ const Step4 = React.forwardRef((props, ref) => {
   // 验证电话号码
   const validatePhoneNumber = () => {
     const phoneRegex = /^[1-9]\d{9}$/; // 仅示例，根据实际需求调整
-    if (!phoneRegex.test(contactPhoneNumber.trim())) {
-      setContactPhoneNumberError("电话号码格式不正确");
+    if (!phoneRegex.test(legalPhoneNumber.trim())) {
+      setLegalPhoneNumberError("电话号码格式不正确");
       return false;
     } else {
-      setContactPhoneNumberError(null);
+      setLegalPhoneNumberError(null);
       return true;
     }
   };
 
   // 验证证件号码
   const validateCardNumber = () => {
-    if (contactCardNumber.trim() === "") {
-      setContactCardNumberError("证件号码不能为空");
+    if (legalCardNumber.trim() === "") {
+      setLegalCardNumberError("证件号码不能为空");
       return false;
     } else {
-      setContactCardNumberError(null);
+      setLegalCardNumberError(null);
       return true;
     }
   };
@@ -72,81 +82,73 @@ const Step4 = React.forwardRef((props, ref) => {
     <div className="wizard-step" ref={ref}>
       <p className="text-center">请提供您的详细信息。</p>
       <Row>
-        <Col md={{ span: 5, offset: 1 }}>
+        <Col md={{ span: 10, offset: 1 }}>
           <FormGroup>
             <FormLabel>
-              联系人姓名 <span className="text-danger">*</span>
+              法人姓名 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"
-              name="contactName"
+              name="legalName"
               placeholder="请输入您的姓名"
-              value={contactName}
-              onChange={(e) => setContactName(e.target.value)}
+              value={legalName}
+              onChange={(e) => setLegalName(e.target.value)}
               onBlur={validateName}
             />
-            {contactNameError && (
-              <small className="text-danger">{contactNameError}</small>
+            {legalNameError && (
+              <small className="text-danger">{legalNameError}</small>
             )}
           </FormGroup>
-        </Col>
-        <Col md={5}>
           <FormGroup>
             <FormLabel>
-              联系人电话 <span className="text-danger">*</span>
+              法人电话 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"
-              name="contactPhoneNumber"
+              name="legalPhoneNumber"
               placeholder="请输入您的电话号码"
-              value={contactPhoneNumber}
-              onChange={(e) => setContactPhoneNumber(e.target.value)}
+              value={legalPhoneNumber}
+              onChange={(e) => setLegalPhoneNumber(e.target.value)}
               onBlur={validatePhoneNumber}
             />
-            {contactPhoneNumberError && (
-              <small className="text-danger">{contactPhoneNumberError}</small>
+            {legalPhoneNumberError && (
+              <small className="text-danger">{legalPhoneNumberError}</small>
             )}
           </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={{ span: 10, offset: 1 }}>
           <FormGroup>
             <FormLabel>
               证件号码 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"
-              name="contactCardNumber"
+              name="legalCardNumber"
               placeholder="请输入您的证件号码"
-              value={contactCardNumber}
-              onChange={(e) => setContactCardNumber(e.target.value)}
+              value={legalCardNumber}
+              onChange={(e) => setLegalCardNumber(e.target.value)}
               onBlur={validateCardNumber}
             />
-            {contactCardNumberError && (
-              <small className="text-danger">{contactCardNumberError}</small>
+            {legalCardNumberError && (
+              <small className="text-danger">{legalCardNumberError}</small>
             )}
           </FormGroup>
-          <FormLabel>
-            证件生效时间 <span className="text-danger">*</span>
-          </FormLabel>
-          <ReactDatetime
-            inputProps={{
-              className: "form-control",
-              placeholder: "请选择日期",
-            }}
-            timeFormat={false}
-          />
-          <FormLabel>
-            证件过期时间 <span className="text-danger">*</span>
-          </FormLabel>
-          <ReactDatetime
-            inputProps={{
-              className: "form-control",
-              placeholder: "请选择日期",
-            }}
-            timeFormat={false}
-          />
+          <FormGroup>
+            <FormLabel>证照生效时间</FormLabel>
+            <FormControl
+              type="date"
+              value={effectTime}
+              onChange={(e) => setEffectTime(e.target.value)}
+              onBlur={handleInputSave}
+            />
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>证照过期时间</FormLabel>
+            <FormControl
+              type="date"
+              value={expireTime}
+              onChange={(e) => setExpireTime(e.target.value)}
+              onBlur={handleInputSave}
+            />
+          </FormGroup>
           <FormLabel>
             证件过期时间 <span className="text-danger">*</span>
           </FormLabel>

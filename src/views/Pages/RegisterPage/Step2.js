@@ -19,10 +19,10 @@ const Step2 = React.forwardRef((props, ref) => {
 
   const handleInputSave = () => {
     props.updateStep2Data({
-      contactName,
-      contactPhoneNumber,
-      contactCardNumber,
-      contactCertType,
+      contact_name: contactName,
+      contact_phone_no: contactPhoneNumber,
+      contact_card_no: contactCardNumber,
+      contact_cert_type: contactCertType,
     });
   };
 
@@ -53,10 +53,8 @@ const Step2 = React.forwardRef((props, ref) => {
 
     if (Object.keys(errors).length === 0) {
       console.log("Form is valid, navigating to next page.");
-      // 此处加上你跳转到下一页的逻辑
     } else {
       console.log("Form is invalid:", errors);
-      // 可以更新状态来显示错误信息
     }
   };
 
@@ -64,7 +62,7 @@ const Step2 = React.forwardRef((props, ref) => {
     <div className="wizard-step" ref={ref}>
       <p className="text-center">Please tell us more about yourself.</p>
       <Row>
-        <Col md={{ span: 5, offset: 1 }}>
+        <Col md={{ span: 10, offset: 1 }}>
           <FormGroup>
             <FormLabel>
               联系人姓名 <span className="text-danger">*</span>
@@ -78,8 +76,6 @@ const Step2 = React.forwardRef((props, ref) => {
               onBlur={handleInputSave}
             />
           </FormGroup>
-        </Col>
-        <Col md={5}>
           <FormGroup>
             <FormLabel>
               联系人电话 <span className="text-danger">*</span>

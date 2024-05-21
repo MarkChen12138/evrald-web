@@ -25,7 +25,7 @@ const Step5 = React.forwardRef((props, ref) => {
   // 验证姓名
   const validateName = () => {
     if (contactName.trim() === "") {
-      setContactNameError("法人姓名不能为空");
+      setContactNameError("受益人姓名不能为空");
       return false;
     } else {
       setContactNameError(null);
@@ -75,7 +75,7 @@ const Step5 = React.forwardRef((props, ref) => {
         <Col md={{ span: 5, offset: 1 }}>
           <FormGroup>
             <FormLabel>
-              法人姓名 <span className="text-danger">*</span>
+              受益人姓名 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"
@@ -93,7 +93,7 @@ const Step5 = React.forwardRef((props, ref) => {
         <Col md={5}>
           <FormGroup>
             <FormLabel>
-              法人电话 <span className="text-danger">*</span>
+              受益人电话 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"

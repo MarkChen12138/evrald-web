@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import {
   Row,
-  Col,
   FormGroup,
   FormControl,
   FormLabel,
   Button,
+  Col,
 } from "react-bootstrap";
 import Select from "react-select";
 
@@ -14,16 +14,27 @@ const Step3 = React.forwardRef((props, ref) => {
   const [isFinancialOrg, setIsFinancialOrg] = useState(false);
   const [financialOrgType, setFinancialOrgType] = useState("");
   const [financialOrgCertImg, setFinancialOrgCertImg] = useState("");
-  const [financialOrgCertImages, setFinancialOrgCertImages] = useState([]);
+  const [financialOrgCertImagesName, setFinancialOrgCertImagesName] = useState(
+    []
+  );
   const [certificateType, setCertificateType] = useState("");
   const [certType, setCertType] = useState("");
   const [certNo, setCertNo] = useState("");
-  const [certImage, setCertImage] = useState("");
+  const [certImage, setCertImage] = useState([]);
   const [merchantName, setMerchantName] = useState("");
   const [legalPersonName, setLegalPersonName] = useState("");
   const [registerAddress, setRegisterAddress] = useState("");
   const [effectTime, setEffectTime] = useState("");
   const [expireTime, setExpireTime] = useState("");
+  const [requiredEmployerLetter, setRequiredEmployerLetter] = useState("");
+  const [merchantType, setMerchantType] = useState("");
+  const [storeName, setStoreName] = useState("");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
+  const [storeAddress, setStoreAddress] = useState("");
+  const [storeDoorImg, setStoreDoorImg] = useState([]);
+  const [storeInnerImg, setStoreInnerImg] = useState([]);
 
   const identityOptions = [
     { value: "ENTERPRISE", label: "企业" },
@@ -63,22 +74,97 @@ const Step3 = React.forwardRef((props, ref) => {
     { value: "OTHER_REG_CERT", label: "其他证书/批文/证明" },
   ];
 
-  const requiredTypes = ["ENTERPRISE", "IND_BIZ", "GOV", "INST", "ORG"];
+  const handleInputSave = () => {
+    const authIdentityInfo = {
+      identity_type: identityType,
+      is_financial_org: isFinancialOrg,
+    };
+    if (isFinancialOrg) {
+      authIdentityInfo.financial_org_info = {
+        financial_org_type: financialOrgType,
+        financial_org_cert_img: financialOrgCertImagesName,
+      };
+    }
+    authIdentityInfo.certificate_type = certificateType;
+    if (
+      certType !== "" &&
+      certNo !== "" &&
+      certImage !== "" &&
+      merchantName !== "" &&
+      legalPersonName !== "" &&
+      registerAddress !== "" &&
+      effectTime !== "" &&
+      expireTime !== ""
+    ) {
+      authIdentityInfo.certificate_info = {
+        cert_type: certType,
+        cert_no: certNo,
+        cert_image: certImage,
+        merchant_name: merchantName,
+        legal_person_name: legalPersonName,
+        register_address: registerAddress,
+        effect_time: effectTime,
+        expire_time: expireTime,
+      };
+    }
+    if (requiredEmployerLetter !== "") {
+      authIdentityInfo.employer_letter = requiredEmployerLetter;
+    }
+    if (identityType === "MSE") {
+      authIdentityInfo.merchant_info = {
+        merchant_type: merchantType,
+        store_name: storeName,
+        province: province,
+        city: city,
+        district: district,
+        store_address: storeAddress,
+        store_door_img: storeDoorImg,
+        store_inner_img: storeInnerImg,
+      };
+    }
+    props.updateStep3Data(authIdentityInfo);
+  };
 
-  const handleFileChange = (event) => {
+  const requiredCertificateTypes = [
+    "ENTERPRISE",
+    "IND_BIZ",
+    "GOV",
+    "INST",
+    "ORG",
+  ];
+
+  const requiredEmployerLetterTypes = ["GOV", "INST"];
+
+  const handleFinancialOrgCertImagesNameChange = (event) => {
     const files = event.target.files;
     if (files) {
-      setFinancialOrgCertImages([...files]);
+      const filenames = Array.from(files).map((file) => file.name);
+      console.log(filenames);
+      setFinancialOrgCertImagesName(filenames);
+    } else {
+      setFinancialOrgCertImagesName([]);
     }
+  };
+
+  const handleCertImageChange = (event) => {
+    const files = event.target.files;
+    if (files) {
+      const filenames = Array.from(files).map((file) => file.name);
+      console.log(filenames);
+      setCertImage(filenames);
+    } else {
+      setCertImage([]);
+    }
+    handleInputSave();
   };
 
   return (
     <div className="wizard-step" ref={ref}>
-      <p className="text-center">
-        Please tell us more about your organization.
-      </p>
       <Row>
-        <Col md={6}>
+        <Col md={{ span: 10, offset: 1 }}>
+          <p className="text-center">
+            Please tell us more about your organization.
+          </p>
           <FormGroup>
             <FormLabel>主体类型</FormLabel>
             <Select
@@ -88,10 +174,9 @@ const Step3 = React.forwardRef((props, ref) => {
               )}
               options={identityOptions}
               onChange={(option) => setIdentityType(option.value)}
+              onBlur={handleInputSave}
             />
           </FormGroup>
-        </Col>
-        <Col md={6}>
           <FormGroup>
             <FormLabel>是否为金融机构</FormLabel>
             <Select
@@ -102,200 +187,243 @@ const Step3 = React.forwardRef((props, ref) => {
               options={binaryOptions}
               onChange={(option) => setIsFinancialOrg(option.value)}
               placeholder="选择是否为金融机构"
+              onBlur={handleInputSave}
             />
           </FormGroup>
-        </Col>
-      </Row>
-      {isFinancialOrg && (
-        <>
-          {" "}
-          <FormGroup>
-            <FormLabel>金融机构类型</FormLabel>
-            <Select
-              name="financialOrgType"
-              value={financialTypes.find(
-                (type) => type.value === financialOrgType
-              )}
-              options={financialTypes}
-              onChange={(option) => setFinancialOrgType(option.value)}
-            />
-          </FormGroup>
-          <FormGroup>
-            <FormLabel>金融机构许可证图片（最多五张）</FormLabel>
-            <FormControl
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-            {financialOrgCertImages.length > 0 && (
-              <div style={{ marginTop: "10px" }}>
-                {Array.from(financialOrgCertImages).map((file, index) => (
-                  <div key={index}>{file.name}</div>
-                ))}
-              </div>
-            )}
-          </FormGroup>
-        </>
-      )}
-      {requiredTypes.includes(identityType) && (
-        <Row>
-          <Col md={6}>
-            <FormGroup>
-              <FormLabel>证件信息</FormLabel>
-              <Select
-                name="certificateType"
-                value={certificateTypes.find(
-                  (type) => type.value === certificateType
-                )}
-                options={certificateTypes}
-                onChange={(option) => setCertificateType(option.value)}
-              />
-            </FormGroup>
-          </Col>
-          {certificateType === "BUSINESS_CERT" && (
-            <Col md={6}>
+          {isFinancialOrg && (
+            <>
               <FormGroup>
-                <FormLabel>证照类型</FormLabel>
+                <FormLabel>金融机构类型</FormLabel>
                 <Select
-                  name="certType"
-                  value={certTypes.find((type) => type.value === certType)}
-                  options={certTypes}
-                  onChange={(option) => setCertType(option.value)}
+                  name="financialOrgType"
+                  value={financialTypes.find(
+                    (type) => type.value === financialOrgType
+                  )}
+                  options={financialTypes}
+                  onChange={(option) => setFinancialOrgType(option.value)}
+                  onBlur={handleInputSave}
                 />
               </FormGroup>
-            </Col>
+              <FormGroup>
+                <FormLabel>金融机构许可证图片（最多五张）</FormLabel>
+                <FormControl
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFinancialOrgCertImagesNameChange}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+            </>
           )}
-          <Col md={6}>
+          {requiredCertificateTypes.includes(identityType) && (
+            <>
+              <FormGroup>
+                <FormLabel>证件信息</FormLabel>
+                <Select
+                  name="certificateType"
+                  value={certificateTypes.find(
+                    (type) => type.value === certificateType
+                  )}
+                  options={certificateTypes}
+                  onChange={(option) => setCertificateType(option.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              {certificateType === "BUSINESS_CERT" && (
+                <FormGroup>
+                  <FormLabel>证照类型</FormLabel>
+                  <Select
+                    name="certType"
+                    value={certTypes.find((type) => type.value === certType)}
+                    options={certTypes}
+                    onChange={(option) => setCertType(option.value)}
+                    onBlur={handleInputSave}
+                  />
+                </FormGroup>
+              )}
+              <FormGroup>
+                <FormLabel>证件编号</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入证件编号"
+                  value={certNo}
+                  onChange={(e) => setCertNo(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>证照图片</FormLabel>
+                <FormControl
+                  type="file"
+                  multiple
+                  placeholder="请输入图片链接"
+                  onChange={handleCertImageChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>证照商户名称</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入商户名称"
+                  value={merchantName}
+                  onChange={(e) => setMerchantName(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>法人姓名</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入法人姓名"
+                  value={legalPersonName}
+                  onChange={(e) => setLegalPersonName(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>注册地址</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入注册地址"
+                  value={registerAddress}
+                  onChange={(e) => setRegisterAddress(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>证照生效时间</FormLabel>
+                <FormControl
+                  type="date"
+                  value={effectTime}
+                  onChange={(e) => setEffectTime(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>证照过期时间</FormLabel>
+                <FormControl
+                  type="date"
+                  value={expireTime}
+                  onChange={(e) => setExpireTime(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+            </>
+          )}
+          {requiredEmployerLetterTypes.includes(identityType) && (
             <FormGroup>
-              <FormLabel>证件编号</FormLabel>
-              <FormControl
-                type="text"
-                placeholder="请输入证件编号"
-                value={certNo}
-                onChange={(e) => setCertNo(e.target.value)}
-              />
-            </FormGroup>
-          </Col>
-          <Col md={6}>
-            <FormGroup>
-              <FormLabel>证照图片</FormLabel>
+              <FormLabel>单位证明函照片</FormLabel>
               <FormControl
                 type="file"
-                placeholder="请输入图片链接"
-                value={certImage}
-                onChange={(e) => setCertImage(e.target.value)}
+                mutiple
+                onChange={(e) =>
+                  setRequiredEmployerLetter(
+                    Array.from(e.target.files).map((file) => file.name)
+                  )
+                }
+                onBlur={handleInputSave}
               />
             </FormGroup>
-          </Col>
-          <Col md={6}>
-            <FormGroup>
-              <FormLabel>证照商户名称</FormLabel>
-              <FormControl
-                type="text"
-                placeholder="请输入商户名称"
-                value={merchantName}
-                onChange={(e) => setMerchantName(e.target.value)}
-              />
-            </FormGroup>
-          </Col>
-          <Col md={6}>
-            <FormGroup>
-              <FormLabel>法人姓名</FormLabel>
-              <FormControl
-                type="text"
-                placeholder="请输入法人姓名"
-                value={legalPersonName}
-                onChange={(e) => setLegalPersonName(e.target.value)}
-              />
-            </FormGroup>
-          </Col>
-          <Col md={6}>
-            <FormGroup>
-              <FormLabel>注册地址</FormLabel>
-              <FormControl
-                type="text"
-                placeholder="请输入注册地址"
-                value={registerAddress}
-                onChange={(e) => setRegisterAddress(e.target.value)}
-              />
-            </FormGroup>
-          </Col>
-          <Col md={6}>
-            <FormGroup>
-              <FormLabel>证照生效时间</FormLabel>
-              <FormControl
-                type="date"
-                value={effectTime}
-                onChange={(e) => setEffectTime(e.target.value)}
-              />
-            </FormGroup>
-          </Col>
-          <Col md={6}>
-            <FormGroup>
-              <FormLabel>证照过期时间</FormLabel>
-              <FormControl
-                type="date"
-                value={expireTime}
-                onChange={(e) => setExpireTime(e.target.value)}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
-      )}
+          )}
+          {identityType === "MSE" && (
+            <>
+              <FormGroup>
+                <FormLabel>小微商户经营类型</FormLabel>
+                <FormControl
+                  as="select"
+                  value={merchantType}
+                  onChange={(e) => setMerchantType(e.target.value)}
+                  onBlur={handleInputSave}
+                >
+                  <option value="STORE">门店场所（STORE）</option>
+                  <option value="STALL">流动经营（STALL）</option>
+                </FormControl>
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>门店名称</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入门店名称"
+                  value={storeName}
+                  onChange={(e) => setStoreName(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>门店省份</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入门店省份"
+                  value={province}
+                  onChange={(e) => setProvince(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>门店城市</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入门店城市"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>门店街道</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入门店街道"
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>门店详细地址</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="请输入门店详细地址"
+                  value={storeAddress}
+                  onChange={(e) => setStoreAddress(e.target.value)}
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>门店门头照信息或摊位照</FormLabel>
+                <FormControl
+                  type="file"
+                  multiple
+                  placeholder="请输入图片"
+                  onChange={(e) =>
+                    setStoreDoorImg(
+                      Array.from(e.target.files).map((file) => file.name)
+                    )
+                  }
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>门店店内照片或者摊位照侧面</FormLabel>
+                <FormControl
+                  type="file"
+                  multiple
+                  placeholder="请输入图片"
+                  onChange={(e) =>
+                    setStoreInnerImg(
+                      Array.from(e.target.files).map((file) => file.name)
+                    )
+                  }
+                  onBlur={handleInputSave}
+                />
+              </FormGroup>
+            </>
+          )}
+        </Col>
+      </Row>
     </div>
   );
 });
-
-function FinancialOrgForm(props, ref) {
-  const [identityType, setIdentityType] = useState("");
-  const [isFinancialOrg, setIsFinancialOrg] = useState(false);
-
-  const identityOptions = [
-    // Add your options for identity type here
-  ];
-  const binaryOptions = [
-    { value: true, label: "是" },
-    { value: false, label: "否" },
-  ];
-
-  return (
-    <div className="wizard-step" ref={ref}>
-      <p className="text-center">
-        Please tell us more about your organization.
-      </p>
-      <Row>
-        <Col md={6}>
-          <FormGroup>
-            <FormLabel>主体类型</FormLabel>
-            <Select
-              name="identityType"
-              value={identityOptions.find(
-                (option) => option.value === identityType
-              )}
-              options={identityOptions}
-              onChange={(option) => setIdentityType(option.value)}
-            />
-          </FormGroup>
-        </Col>
-        <Col md={6}>
-          <FormGroup>
-            <FormLabel>是否为金融机构</FormLabel>
-            <Select
-              name="isFinancialOrg"
-              value={binaryOptions.find(
-                (option) => option.value === isFinancialOrg
-              )}
-              options={binaryOptions}
-              onChange={(option) => setIsFinancialOrg(option.value)}
-              placeholder="选择是否为金融机构"
-            />
-          </FormGroup>
-        </Col>
-        {isFinancialOrg && <React.Fragment></React.Fragment>}
-      </Row>
-    </div>
-  );
-}
 
 export default Step3;

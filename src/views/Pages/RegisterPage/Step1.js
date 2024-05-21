@@ -17,7 +17,6 @@ const Step1 = React.forwardRef((props, ref) => {
   const [companyNameError, setCompanyNamelError] = React.useState(null);
 
   const handleInputSave = () => {
-    // Call the passed in updateFormData function to update parent state
     props.updateStep1Data({ email, invitationCode, companyName });
   };
 
@@ -64,10 +63,10 @@ const Step1 = React.forwardRef((props, ref) => {
     <div className="wizard-step" ref={ref}>
       <p className="text-center">Please tell us more about yourself.</p>
       <Row>
-        <Col md={{ span: 5, offset: 1 }}>
+        <Col md={{ span: 10, offset: 1 }}>
           <FormGroup>
             <FormLabel>
-              公司邀请码 <span className="text-danger">*</span>
+              邀请码 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"
@@ -79,11 +78,9 @@ const Step1 = React.forwardRef((props, ref) => {
             />
             {invitationCodeError}
           </FormGroup>
-        </Col>
-        <Col md={5}>
           <FormGroup>
             <FormLabel>
-              公司名称 <span className="text-danger">*</span>
+              名称 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"

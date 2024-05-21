@@ -26,35 +26,52 @@ import Step4 from "./Step4.js";
 import Step5 from "./Step5.js";
 
 function RegisterPage() {
-  const updateStep1Data = (newData) => {
-    setStep1Data((prevData) => ({ ...prevData, ...newData }));
-    console.log(step1Data);
-  };
-
   const [step1Data, setStep1Data] = React.useState({
     email: "",
     invitationCode: "",
     companyName: "",
   });
 
-  const updateStep2Data = (newData) => {
-    setStep2Data((prevData) => ({
-      ...prevData,
-      contact_person_info: {
-        ...prevData.contact_person_info,
-        ...newData,
-      },
-    }));
+  const updateStep1Data = (newData) => {
+    setStep1Data((prevData) => ({ ...prevData, ...newData }));
   };
 
   const [step2Data, setStep2Data] = React.useState({
-    contact_person_info: {
-      contact_name: "",
-      contact_phone_no: "",
-      contact_card_no: "",
-      contact_cert_type: "",
-    },
+    contact_person_info: {},
   });
+
+  const updateStep2Data = (newData) => {
+    setStep2Data({
+      contact_person_info: {
+        ...newData,
+      },
+    });
+    console.log(step2Data);
+  };
+
+  const [step3Data, setStep3Data] = React.useState({});
+
+  const updateStep3Data = (newData) => {
+    setStep3Data({
+      auth_identity_info: {
+        ...newData,
+      },
+    });
+    console.log(step3Data);
+  };
+
+  const [step4Data, setStep4Data] = React.useState({
+    legal_person_info: {},
+  });
+
+  const updateStep4Data = (newData) => {
+    setStep4Data({
+      lehal_person_info: {
+        ...newData,
+      },
+    });
+    console.log(step4Data);
+  };
 
   const steps = [
     {
@@ -67,7 +84,11 @@ function RegisterPage() {
       component: Step2,
       stepProps: { updateStep2Data },
     },
-    { stepName: "主体信息", component: Step3 },
+    {
+      stepName: "主体信息",
+      component: Step3,
+      stepProps: { updateStep3Data },
+    },
     { stepName: "法人身份信息", component: Step4 },
     { stepName: "补充信息", component: Step5 },
   ];
