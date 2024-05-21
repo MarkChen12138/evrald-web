@@ -17,7 +17,16 @@ const Step2 = React.forwardRef((props, ref) => {
     React.useState(null);
   const [contactCertType, setContactCertType] = React.useState("");
 
-  const certTypes = [
+  const handleInputSave = () => {
+    props.updateStep2Data({
+      contactName,
+      contactPhoneNumber,
+      contactCardNumber,
+      contactCertType,
+    });
+  };
+
+  const contactCertTypes = [
     { value: "RESIDENT", label: "居民身份证" },
     { value: "PASSPORT", label: "护照" },
     { value: "PASSPORT_HK_MO", label: "港澳居民(往来大陆通行证)" },
@@ -66,6 +75,7 @@ const Step2 = React.forwardRef((props, ref) => {
               placeholder="ex: 张三"
               value={contactName}
               onChange={(event) => setContactName(event.target.value)}
+              onBlur={handleInputSave}
             />
           </FormGroup>
         </Col>
@@ -80,6 +90,7 @@ const Step2 = React.forwardRef((props, ref) => {
               placeholder="ex: 19999999999"
               value={contactPhoneNumber}
               onChange={(event) => setContactPhoneNumber(event.target.value)}
+              onBlur={handleInputSave}
             />
           </FormGroup>
         </Col>
@@ -96,6 +107,7 @@ const Step2 = React.forwardRef((props, ref) => {
               placeholder="ex: 233330199001010001"
               value={contactCardNumber}
               onChange={(event) => setContactCardNumber(event.target.value)}
+              onBlur={handleInputSave}
             />
           </FormGroup>
         </Col>
@@ -108,11 +120,14 @@ const Step2 = React.forwardRef((props, ref) => {
             </FormLabel>
             <Select
               name="contactCertType"
-              value={certTypes.find((type) => type.value === contactCertType)}
-              options={certTypes}
+              value={contactCertTypes.find(
+                (type) => type.value === contactCertType
+              )}
+              options={contactCertTypes}
               onChange={(selectedOption) =>
                 setContactCertType(selectedOption.value)
               }
+              onBlur={handleInputSave}
             />
           </FormGroup>
         </Col>

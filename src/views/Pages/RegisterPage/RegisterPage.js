@@ -25,15 +25,53 @@ import Step3 from "./Step3.js";
 import Step4 from "./Step4.js";
 import Step5 from "./Step5.js";
 
-const steps = [
-  { stepName: "公司邀请码确认", component: Step1 },
-  { stepName: "联系人信息", component: Step2 },
-  { stepName: "主体信息", component: Step3 },
-  { stepName: "法人身份信息", component: Step4 },
-  { stepName: "补充信息", component: Step5 },
-];
-
 function RegisterPage() {
+  const updateStep1Data = (newData) => {
+    setStep1Data((prevData) => ({ ...prevData, ...newData }));
+    console.log(step1Data);
+  };
+
+  const [step1Data, setStep1Data] = React.useState({
+    email: "",
+    invitationCode: "",
+    companyName: "",
+  });
+
+  const updateStep2Data = (newData) => {
+    setStep2Data((prevData) => ({
+      ...prevData,
+      contact_person_info: {
+        ...prevData.contact_person_info,
+        ...newData,
+      },
+    }));
+  };
+
+  const [step2Data, setStep2Data] = React.useState({
+    contact_person_info: {
+      contact_name: "",
+      contact_phone_no: "",
+      contact_card_no: "",
+      contact_cert_type: "",
+    },
+  });
+
+  const steps = [
+    {
+      stepName: "公司邀请码确认",
+      component: Step1,
+      stepProps: { updateStep1Data },
+    },
+    {
+      stepName: "联系人信息",
+      component: Step2,
+      stepProps: { updateStep2Data },
+    },
+    { stepName: "主体信息", component: Step3 },
+    { stepName: "法人身份信息", component: Step4 },
+    { stepName: "补充信息", component: Step5 },
+  ];
+
   const [alertState, setAlertState] = React.useState(false);
   const [cardClasses, setCardClasses] = React.useState("card-hidden");
   React.useEffect(() => {

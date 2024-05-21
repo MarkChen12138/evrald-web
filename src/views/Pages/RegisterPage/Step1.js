@@ -16,6 +16,11 @@ const Step1 = React.forwardRef((props, ref) => {
   const [companyName, setCompanyName] = React.useState("");
   const [companyNameError, setCompanyNamelError] = React.useState(null);
 
+  const handleInputSave = () => {
+    // Call the passed in updateFormData function to update parent state
+    props.updateStep1Data({ email, invitationCode, companyName });
+  };
+
   const isValidated = () => {
     console.log("hey");
     var re =
@@ -70,6 +75,7 @@ const Step1 = React.forwardRef((props, ref) => {
               placeholder="ex:EV213H2UH8MS"
               value={invitationCode}
               onChange={(event) => setInvitationCode(event.target.value)}
+              onBlur={handleInputSave}
             />
             {invitationCodeError}
           </FormGroup>
@@ -85,6 +91,7 @@ const Step1 = React.forwardRef((props, ref) => {
               placeholder="ex: 河北常青实业有限公司"
               value={companyName}
               onChange={(event) => setCompanyName(event.target.value)}
+              // onBlur={handleInputSave}
             />
             {companyNameError}
           </FormGroup>
@@ -102,6 +109,7 @@ const Step1 = React.forwardRef((props, ref) => {
               placeholder="ex: hello@creative-tim.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              onBlur={handleInputSave}
             />
             {emailError}
           </FormGroup>
