@@ -66,7 +66,7 @@ function RegisterPage() {
 
   const updateStep4Data = (newData) => {
     setStep4Data({
-      lehal_person_info: {
+      legal_person_info: {
         ...newData,
       },
     });
@@ -89,7 +89,12 @@ function RegisterPage() {
       component: Step3,
       stepProps: { updateStep3Data },
     },
-    { stepName: "法人身份信息", component: Step4 },
+    {
+      stepName: "法人身份信息",
+      component: Step4,
+      stepProps: { updateStep4Data },
+      identityType: step3Data.auth_identity_info?.identity_type,
+    },
     { stepName: "补充信息", component: Step5 },
   ];
 
