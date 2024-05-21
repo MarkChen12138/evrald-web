@@ -23,12 +23,14 @@ import Step1 from "./Step1.js";
 import Step2 from "./Step2.js";
 import Step3 from "./Step3.js";
 import Step4 from "./Step4.js";
+import Step5 from "./Step5.js";
 
 const steps = [
   { stepName: "公司邀请码确认", component: Step1 },
   { stepName: "联系人信息", component: Step2 },
   { stepName: "主体信息", component: Step3 },
   { stepName: "法人身份信息", component: Step4 },
+  { stepName: "补充信息", component: Step5 },
 ];
 
 function RegisterPage() {
