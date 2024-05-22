@@ -68,9 +68,8 @@ const Step4 = React.forwardRef((props, ref) => {
     if (legalType === "AGENT_PERSON") {
       Step4Data.auth_letter_img = authLetterImg;
     }
-    if (isBenefitPerson === false) {
-      Step4Data.is_benefit_person = isBenefitPerson;
-    }
+    Step4Data.is_benefit_person = isBenefitPerson;
+    props.updateStep4Data(Step4Data);
   };
 
   // 验证姓名
@@ -223,12 +222,12 @@ const Step4 = React.forwardRef((props, ref) => {
               </FormLabel>
               <Select
                 name="legalType"
-                value={contactCertTypes.find(
-                  (type) => type.value === contactCertType
+                value={legalTypeOptions.find(
+                  (type) => type.value === legalType
                 )}
-                options={contactCertTypes}
+                options={legalTypeOptions}
                 onChange={(selectedOption) =>
-                  setContactCertType(selectedOption.value)
+                  setLegalType(selectedOption.value)
                 }
                 onBlur={handleInputSave}
               />
@@ -250,20 +249,22 @@ const Step4 = React.forwardRef((props, ref) => {
               />
             </FormGroup>
           )}
-          <FormGroup>
-            <FormLabel>授权函照片</FormLabel>
-            <FormControl
-              type="file"
-              multiple
-              placeholder="请输入图片"
-              onChange={(e) =>
-                setAuthLetterImg(
-                  Array.from(e.target.files).map((file) => file.name)
-                )
-              }
-              onBlur={handleInputSave}
-            />
-          </FormGroup>
+          {legalType === "AGENT_PERSON" && (
+            <FormGroup>
+              <FormLabel>授权函照片</FormLabel>
+              <FormControl
+                type="file"
+                multiple
+                placeholder="请输入图片"
+                onChange={(e) =>
+                  setAuthLetterImg(
+                    Array.from(e.target.files).map((file) => file.name)
+                  )
+                }
+                onBlur={handleInputSave}
+              />
+            </FormGroup>
+          )}
 
           <FormGroup>
             <FormLabel>经营者/法人是否为受益人</FormLabel>

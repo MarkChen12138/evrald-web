@@ -49,7 +49,9 @@ function RegisterPage() {
     console.log(step2Data);
   };
 
-  const [step3Data, setStep3Data] = React.useState({});
+  const [step3Data, setStep3Data] = React.useState({
+    auth_identity_info: { identity_type: "" },
+  });
 
   const updateStep3Data = (newData) => {
     setStep3Data({
@@ -57,7 +59,6 @@ function RegisterPage() {
         ...newData,
       },
     });
-    console.log(step3Data);
   };
 
   const [step4Data, setStep4Data] = React.useState({
@@ -71,6 +72,13 @@ function RegisterPage() {
       },
     });
     console.log(step4Data);
+  };
+
+  const [step5Data, setStep5Data] = React.useState({});
+
+  const updateStep5Data = (newData) => {
+    setStep5Data(newData);
+    console.log(step5Data);
   };
 
   const steps = [
@@ -92,10 +100,21 @@ function RegisterPage() {
     {
       stepName: "法人身份信息",
       component: Step4,
-      stepProps: { updateStep4Data },
-      identityType: step3Data.auth_identity_info?.identity_type,
+      stepProps: {
+        updateStep4Data,
+        identityType: step3Data.auth_identity_info.identity_type,
+      },
     },
-    { stepName: "补充信息", component: Step5 },
+    {
+      stepName: "补充信息",
+      component: Step5,
+      stepProps: {
+        updateStep5Data,
+        isBenefitPersonInfoRequired:
+          step3Data.auth_identity_info.identity_type === "ENTERPRISE" &&
+          !step4Data.legal_person_info.is_benefit_person,
+      },
+    },
   ];
 
   const [alertState, setAlertState] = React.useState(false);

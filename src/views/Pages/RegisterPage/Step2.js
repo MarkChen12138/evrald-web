@@ -95,7 +95,7 @@ const Step2 = React.forwardRef((props, ref) => {
         <Col md={{ span: 10, offset: 1 }}>
           <FormGroup>
             <FormLabel>
-              身份证号码 <span className="text-danger">*</span>
+              证件号码 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"
@@ -126,18 +126,6 @@ const Step2 = React.forwardRef((props, ref) => {
               onBlur={handleInputSave}
             />
           </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={{ span: 10, offset: 1 }}>
-          <Button
-            className="btn-outline"
-            type="button"
-            variant="default"
-            onClick={validateForm}
-          >
-            Next Page
-          </Button>
         </Col>
       </Row>
     </div>

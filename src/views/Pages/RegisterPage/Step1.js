@@ -110,12 +110,8 @@ const Step1 = React.forwardRef((props, ref) => {
             />
             {emailError}
           </FormGroup>
-          <Button className="btn-outline" type="button" variant="default">
-            Right
-          </Button>
         </Col>
       </Row>
-      <Row></Row>
     </div>
   );
 });
