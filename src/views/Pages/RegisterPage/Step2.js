@@ -1,30 +1,13 @@
 import React from "react";
-import {
-  Row,
-  Col,
-  FormGroup,
-  FormControl,
-  FormLabel,
-  Button,
-} from "react-bootstrap";
-import Select from "react-select"; // 确保你已经导入了这个库
+import { Row, Col, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import Select from "react-select";
 
 const Step2 = React.forwardRef((props, ref) => {
   const [contactName, setContactName] = React.useState("");
   const [contactPhoneNumber, setContactPhoneNumber] = React.useState("");
   const [contactCardNumber, setContactCardNumber] = React.useState("");
-  const [contactCardNumberError, setContactCardNumberError] =
-    React.useState(null);
   const [contactCertType, setContactCertType] = React.useState("");
-
-  const handleInputSave = () => {
-    props.updateStep2Data({
-      contact_name: contactName,
-      contact_phone_no: contactPhoneNumber,
-      contact_card_no: contactCardNumber,
-      contact_cert_type: contactCertType,
-    });
-  };
+  const [errors, setErrors] = React.useState({});
 
   const contactCertTypes = [
     { value: "RESIDENT", label: "居民身份证" },
@@ -36,27 +19,40 @@ const Step2 = React.forwardRef((props, ref) => {
     { value: "PERMANENT_RESIDENCE_FOREIGNER", label: "外国人永久居住证" },
   ];
 
-  const validateForm = () => {
-    let errors = {};
-    if (!contactName.trim()) {
-      errors.name = "Contact name is required.";
-    }
-    if (!contactPhoneNumber.trim()) {
-      errors.phone = "Contact phone number is required.";
-    }
-    if (!contactCardNumber.trim()) {
-      errors.cardNumber = "Contact card number is required.";
-    }
-    if (!contactCertType) {
-      errors.certType = "Contact certification type is required.";
-    }
-
-    if (Object.keys(errors).length === 0) {
-      console.log("Form is valid, navigating to next page.");
-    } else {
-      console.log("Form is invalid:", errors);
+  const handleInputSave = () => {
+    if (validateForm()) {
+      props.updateStep2Data({
+        contact_name: contactName,
+        contact_phone_no: contactPhoneNumber,
+        contact_card_no: contactCardNumber,
+        contact_cert_type: contactCertType,
+      });
     }
   };
+
+  const validateForm = () => {
+    let newErrors = {};
+    if (!contactName.trim()) {
+      newErrors.contactName = "Contact name is required.";
+    }
+    if (!contactPhoneNumber.trim()) {
+      newErrors.contactPhoneNumber = "Contact phone number is required.";
+    }
+    if (!contactCardNumber.trim()) {
+      newErrors.contactCardNumber = "Contact card number is required.";
+    }
+    if (!contactCertType) {
+      newErrors.contactCertType = "Contact certification type is required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  React.useImperativeHandle(ref, () => ({
+    isValidated: validateForm,
+    handleInputSave: handleInputSave,
+  }));
 
   return (
     <div className="wizard-step" ref={ref}>
@@ -75,6 +71,9 @@ const Step2 = React.forwardRef((props, ref) => {
               onChange={(event) => setContactName(event.target.value)}
               onBlur={handleInputSave}
             />
+            {errors.contactName && (
+              <small className="text-danger">{errors.contactName}</small>
+            )}
           </FormGroup>
           <FormGroup>
             <FormLabel>
@@ -88,6 +87,9 @@ const Step2 = React.forwardRef((props, ref) => {
               onChange={(event) => setContactPhoneNumber(event.target.value)}
               onBlur={handleInputSave}
             />
+            {errors.contactPhoneNumber && (
+              <small className="text-danger">{errors.contactPhoneNumber}</small>
+            )}
           </FormGroup>
         </Col>
       </Row>
@@ -105,6 +107,9 @@ const Step2 = React.forwardRef((props, ref) => {
               onChange={(event) => setContactCardNumber(event.target.value)}
               onBlur={handleInputSave}
             />
+            {errors.contactCardNumber && (
+              <small className="text-danger">{errors.contactCardNumber}</small>
+            )}
           </FormGroup>
         </Col>
       </Row>
@@ -124,7 +129,13 @@ const Step2 = React.forwardRef((props, ref) => {
                 setContactCertType(selectedOption.value)
               }
               onBlur={handleInputSave}
+              classNamePrefix={
+                errors.contactCertType ? "react-select-error" : "react-select"
+              }
             />
+            {errors.contactCertType && (
+              <small className="text-danger">{errors.contactCertType}</small>
+            )}
           </FormGroup>
         </Col>
       </Row>

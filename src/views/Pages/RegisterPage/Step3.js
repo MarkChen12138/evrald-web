@@ -13,20 +13,19 @@ const Step3 = React.forwardRef((props, ref) => {
   const [identityType, setIdentityType] = useState("ENTERPRISE");
   const [isFinancialOrg, setIsFinancialOrg] = useState(false);
   const [financialOrgType, setFinancialOrgType] = useState("");
-  const [financialOrgCertImg, setFinancialOrgCertImg] = useState("");
+  const [financialOrgCertImg, setFinancialOrgCertImg] = useState([]);
   const [financialOrgCertImagesName, setFinancialOrgCertImagesName] = useState(
     []
   );
   const [certificateType, setCertificateType] = useState("");
   const [certType, setCertType] = useState("");
   const [certNo, setCertNo] = useState("");
-  const [certImage, setCertImage] = useState([]);
   const [merchantName, setMerchantName] = useState("");
   const [legalPersonName, setLegalPersonName] = useState("");
   const [registerAddress, setRegisterAddress] = useState("");
   const [effectTime, setEffectTime] = useState("");
   const [expireTime, setExpireTime] = useState("");
-  const [requiredEmployerLetter, setRequiredEmployerLetter] = useState("");
+  const [requiredEmployerLetter, setRequiredEmployerLetter] = useState([]);
   const [merchantType, setMerchantType] = useState("");
   const [storeName, setStoreName] = useState("");
   const [province, setProvince] = useState("");
@@ -35,6 +34,7 @@ const Step3 = React.forwardRef((props, ref) => {
   const [storeAddress, setStoreAddress] = useState("");
   const [storeDoorImg, setStoreDoorImg] = useState([]);
   const [storeInnerImg, setStoreInnerImg] = useState([]);
+  const [errors, setErrors] = useState({});
 
   const identityOptions = [
     { value: "ENTERPRISE", label: "企业" },
@@ -74,57 +74,6 @@ const Step3 = React.forwardRef((props, ref) => {
     { value: "OTHER_REG_CERT", label: "其他证书/批文/证明" },
   ];
 
-  const handleInputSave = () => {
-    const authIdentityInfo = {
-      identity_type: identityType,
-      is_financial_org: isFinancialOrg,
-    };
-    if (isFinancialOrg) {
-      authIdentityInfo.financial_org_info = {
-        financial_org_type: financialOrgType,
-        financial_org_cert_img: financialOrgCertImagesName,
-      };
-    }
-    authIdentityInfo.certificate_type = certificateType;
-    if (
-      certType !== "" &&
-      certNo !== "" &&
-      certImage !== "" &&
-      merchantName !== "" &&
-      legalPersonName !== "" &&
-      registerAddress !== "" &&
-      effectTime !== "" &&
-      expireTime !== ""
-    ) {
-      authIdentityInfo.certificate_info = {
-        cert_type: certType,
-        cert_no: certNo,
-        cert_image: certImage,
-        merchant_name: merchantName,
-        legal_person_name: legalPersonName,
-        register_address: registerAddress,
-        effect_time: effectTime,
-        expire_time: expireTime,
-      };
-    }
-    if (requiredEmployerLetter !== "") {
-      authIdentityInfo.employer_letter = requiredEmployerLetter;
-    }
-    if (identityType === "MSE") {
-      authIdentityInfo.merchant_info = {
-        merchant_type: merchantType,
-        store_name: storeName,
-        province: province,
-        city: city,
-        district: district,
-        store_address: storeAddress,
-        store_door_img: storeDoorImg,
-        store_inner_img: storeInnerImg,
-      };
-    }
-    props.updateStep3Data(authIdentityInfo);
-  };
-
   const requiredCertificateTypes = [
     "ENTERPRISE",
     "IND_BIZ",
@@ -158,6 +107,124 @@ const Step3 = React.forwardRef((props, ref) => {
     handleInputSave();
   };
 
+  const handleInputSave = () => {
+    if (validateForm()) {
+      const authIdentityInfo = {
+        identity_type: identityType,
+        is_financial_org: isFinancialOrg,
+      };
+      if (isFinancialOrg) {
+        authIdentityInfo.financial_org_info = {
+          financial_org_type: financialOrgType,
+          financial_org_cert_img: financialOrgCertImagesName,
+        };
+      }
+      authIdentityInfo.certificate_type = certificateType;
+      if (
+        certType !== "" &&
+        certNo !== "" &&
+        certImage !== "" &&
+        merchantName !== "" &&
+        legalPersonName !== "" &&
+        registerAddress !== "" &&
+        effectTime !== "" &&
+        expireTime !== ""
+      ) {
+        authIdentityInfo.certificate_info = {
+          cert_type: certType,
+          cert_no: certNo,
+          cert_image: certImage,
+          merchant_name: merchantName,
+          legal_person_name: legalPersonName,
+          register_address: registerAddress,
+          effect_time: effectTime,
+          expire_time: expireTime,
+        };
+      }
+      if (requiredEmployerLetter !== "") {
+        authIdentityInfo.employer_letter = requiredEmployerLetter;
+      }
+      if (identityType === "MSE") {
+        authIdentityInfo.merchant_info = {
+          merchant_type: merchantType,
+          store_name: storeName,
+          province: province,
+          city: city,
+          district: district,
+          store_address: storeAddress,
+          store_door_img: storeDoorImg,
+          store_inner_img: storeInnerImg,
+        };
+      }
+      props.updateStep3Data(authIdentityInfo);
+    }
+  };
+
+  const setCertImage = () => {
+    const files = event.target.files;
+    if (files) {
+      const filenames = Array.from(files).map((file) => file.name);
+      console.log(filenames);
+      setCertImage(filenames);
+    } else {
+      setCertImage([]);
+    }
+    handleInputSave();
+  };
+
+  React.useImperativeHandle(ref, () => ({
+    isValidated: validateForm,
+    handleInputSave: handleInputSave,
+  }));
+
+  const validateForm = () => {
+    let newErrors = {};
+    // Example error setup, repeat for each field
+    if (!merchantName.trim()) newErrors.merchantName = "商户名称不能为空";
+    if (!legalPersonName.trim()) newErrors.legalPersonName = "法人姓名不能为空";
+    if (!registerAddress.trim()) newErrors.registerAddress = "注册地址不能为空";
+    if (!certNo.trim()) newErrors.certNo = "证件编号不能为空";
+    if (isFinancialOrg && !financialOrgType)
+      newErrors.financialOrgType = "请选择金融机构类型";
+    if (financialOrgCertImg.length === 0)
+      newErrors.financialOrgCertImg = "请上传金融机构许可证图片";
+    if (requiredCertificateTypes.includes(identityType)) {
+      if (!certNo.trim()) newErrors.certNo = "证件编号不能为空";
+      if (!merchantName.trim()) newErrors.merchantName = "商户名称不能为空";
+      if (!legalPersonName.trim())
+        newErrors.legalPersonName = "法人姓名不能为空";
+      if (!registerAddress.trim())
+        newErrors.registerAddress = "注册地址不能为空";
+      if (!effectTime.trim()) newErrors.effectTime = "生效时间不能为空";
+      if (!expireTime.trim()) newErrors.expireTime = "过期时间不能为空";
+      if (certificateType === "BUSINESS_CERT") {
+        if (!certType) newErrors.certType = "请选择证照类型";
+      }
+    }
+    if (requiredEmployerLetterTypes.includes(identityType)) {
+      if (requiredEmployerLetter.length === 0)
+        newErrors.requiredEmployerLetter = "请上传单位证明函照片";
+    }
+    if (identityType === "MSE") {
+      if (!storeName.trim()) newErrors.storeName = "门店名称不能为空";
+      if (!province.trim()) newErrors.province = "门店省份不能为空";
+      if (!district.trim()) newErrors.district = "门店街道不能为空";
+      if (!storeAddress.trim()) newErrors.storeAddress = "门店详细地址不能为空";
+      if (storeDoorImg.length === 0)
+        newErrors.storeDoorImg = "请上传门店门头照信息或摊位照";
+      if (storeInnerImg.length === 0)
+        newErrors.storeInnerImg = "请上传门店店内照片或者摊位照侧面";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  React.useImperativeHandle(ref, () => ({
+    isValidated: validateForm,
+    handleInputSave: handleInputSave,
+  }));
+
   return (
     <div className="wizard-step" ref={ref}>
       <Row>
@@ -166,7 +233,9 @@ const Step3 = React.forwardRef((props, ref) => {
             Please tell us more about your organization.
           </p>
           <FormGroup>
-            <FormLabel>主体类型</FormLabel>
+            <FormLabel>
+              主体类型<span className="text-danger">*</span>
+            </FormLabel>
             <Select
               name="identityType"
               value={identityOptions.find(
@@ -176,9 +245,14 @@ const Step3 = React.forwardRef((props, ref) => {
               onChange={(option) => setIdentityType(option.value)}
               onBlur={handleInputSave}
             />
+            {errors.identityType && (
+              <small className="text-danger">{errors.identityType}</small>
+            )}
           </FormGroup>
           <FormGroup>
-            <FormLabel>是否为金融机构</FormLabel>
+            <FormLabel>
+              是否为金融机构<span className="text-danger">*</span>
+            </FormLabel>
             <Select
               name="isFinancialOrg"
               value={binaryOptions.find(
@@ -189,11 +263,16 @@ const Step3 = React.forwardRef((props, ref) => {
               placeholder="选择是否为金融机构"
               onBlur={handleInputSave}
             />
+            {errors.isFinancialOrg && (
+              <small className="text-danger">{errors.isFinancialOrg}</small>
+            )}
           </FormGroup>
           {isFinancialOrg && (
             <>
               <FormGroup>
-                <FormLabel>金融机构类型</FormLabel>
+                <FormLabel>
+                  金融机构类型<span className="text-danger">*</span>
+                </FormLabel>
                 <Select
                   name="financialOrgType"
                   value={financialTypes.find(
@@ -203,23 +282,44 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(option) => setFinancialOrgType(option.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.financialOrgType && (
+                  <small className="text-danger">
+                    {errors.financialOrgType}
+                  </small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>金融机构许可证图片（最多五张）</FormLabel>
+                <FormLabel>
+                  金融机构许可证图片（最多五张）
+                  <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="file"
                   multiple
                   accept="image/*"
-                  onChange={handleFinancialOrgCertImagesNameChange}
+                  onChange={(event) => {
+                    const files = event.target.files;
+                    const filenames = Array.from(files).map(
+                      (file) => file.name
+                    );
+                    setFinancialOrgCertImg(filenames);
+                  }}
                   onBlur={handleInputSave}
                 />
+                {errors.financialOrgCertImg && (
+                  <small className="text-danger">
+                    {errors.financialOrgCertImg}
+                  </small>
+                )}
               </FormGroup>
             </>
           )}
           {requiredCertificateTypes.includes(identityType) && (
             <>
               <FormGroup>
-                <FormLabel>证件信息</FormLabel>
+                <FormLabel>
+                  证件信息 <span className="text-danger">*</span>
+                </FormLabel>
                 <Select
                   name="certificateType"
                   value={certificateTypes.find(
@@ -229,10 +329,17 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(option) => setCertificateType(option.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.certificateType && (
+                  <small className="text-danger">
+                    {errors.certificateType}
+                  </small>
+                )}
               </FormGroup>
               {certificateType === "BUSINESS_CERT" && (
                 <FormGroup>
-                  <FormLabel>证照类型</FormLabel>
+                  <FormLabel>
+                    证照类型 <span className="text-danger">*</span>
+                  </FormLabel>
                   <Select
                     name="certType"
                     value={certTypes.find((type) => type.value === certType)}
@@ -240,10 +347,15 @@ const Step3 = React.forwardRef((props, ref) => {
                     onChange={(option) => setCertType(option.value)}
                     onBlur={handleInputSave}
                   />
+                  {errors.certType && (
+                    <small className="text-danger">{errors.certType}</small>
+                  )}
                 </FormGroup>
               )}
               <FormGroup>
-                <FormLabel>证件编号</FormLabel>
+                <FormLabel>
+                  证件编号 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入证件编号"
@@ -251,9 +363,14 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setCertNo(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.certNo && (
+                  <small className="text-danger">{errors.certNo}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>证照图片</FormLabel>
+                <FormLabel>
+                  证照图片 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="file"
                   multiple
@@ -262,7 +379,9 @@ const Step3 = React.forwardRef((props, ref) => {
                 />
               </FormGroup>
               <FormGroup>
-                <FormLabel>证照商户名称</FormLabel>
+                <FormLabel>
+                  证照商户名称 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入商户名称"
@@ -270,9 +389,14 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setMerchantName(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.merchantName && (
+                  <small className="text-danger">{errors.merchantName}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>法人姓名</FormLabel>
+                <FormLabel>
+                  法人姓名 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入法人姓名"
@@ -280,9 +404,16 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setLegalPersonName(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.legalPersonName && (
+                  <small className="text-danger">
+                    {errors.legalPersonName}
+                  </small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>注册地址</FormLabel>
+                <FormLabel>
+                  注册地址 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入注册地址"
@@ -290,30 +421,48 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setRegisterAddress(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.registerAddress && (
+                  <small className="text-danger">
+                    {errors.registerAddress}
+                  </small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>证照生效时间</FormLabel>
+                <FormLabel>
+                  证照生效时间 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="date"
                   value={effectTime}
                   onChange={(e) => setEffectTime(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.effectTime && (
+                  <small className="text-danger">{errors.effectTime}</small>
+                )}
               </FormGroup>
+
               <FormGroup>
-                <FormLabel>证照过期时间</FormLabel>
+                <FormLabel>
+                  证照过期时间 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="date"
                   value={expireTime}
                   onChange={(e) => setExpireTime(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.expireTime && (
+                  <small className="text-danger">{errors.expireTime}</small>
+                )}
               </FormGroup>
             </>
           )}
           {requiredEmployerLetterTypes.includes(identityType) && (
             <FormGroup>
-              <FormLabel>单位证明函照片</FormLabel>
+              <FormLabel>
+                单位证明函照片 <span className="text-danger">*</span>
+              </FormLabel>
               <FormControl
                 type="file"
                 mutiple
@@ -324,12 +473,19 @@ const Step3 = React.forwardRef((props, ref) => {
                 }
                 onBlur={handleInputSave}
               />
+              {errors.requiredEmployerLetter && (
+                <small className="text-danger">
+                  {errors.requiredEmployerLetter}
+                </small>
+              )}
             </FormGroup>
           )}
           {identityType === "MSE" && (
             <>
               <FormGroup>
-                <FormLabel>小微商户经营类型</FormLabel>
+                <FormLabel>
+                  小微商户经营类型 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   as="select"
                   value={merchantType}
@@ -339,9 +495,14 @@ const Step3 = React.forwardRef((props, ref) => {
                   <option value="STORE">门店场所（STORE）</option>
                   <option value="STALL">流动经营（STALL）</option>
                 </FormControl>
+                {errors.merchantType && (
+                  <small className="text-danger">{errors.merchantType}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>门店名称</FormLabel>
+                <FormLabel>
+                  门店名称 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入门店名称"
@@ -349,9 +510,14 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setStoreName(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.storeName && (
+                  <small className="text-danger">{errors.storeName}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>门店省份</FormLabel>
+                <FormLabel>
+                  门店省份 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入门店省份"
@@ -359,9 +525,14 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setProvince(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.province && (
+                  <small className="text-danger">{errors.province}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>门店城市</FormLabel>
+                <FormLabel>
+                  门店城市 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入门店城市"
@@ -369,9 +540,14 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setCity(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.city && (
+                  <small className="text-danger">{errors.city}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>门店街道</FormLabel>
+                <FormLabel>
+                  门店街道 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入门店街道"
@@ -379,9 +555,14 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setDistrict(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.district && (
+                  <small className="text-danger">{errors.district}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>门店详细地址</FormLabel>
+                <FormLabel>
+                  门店详细地址 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="text"
                   placeholder="请输入门店详细地址"
@@ -389,9 +570,14 @@ const Step3 = React.forwardRef((props, ref) => {
                   onChange={(e) => setStoreAddress(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.storeAddress && (
+                  <small className="text-danger">{errors.storeAddress}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>门店门头照信息或摊位照</FormLabel>
+                <FormLabel>
+                  门店门头照信息或摊位照 <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="file"
                   multiple
@@ -403,9 +589,15 @@ const Step3 = React.forwardRef((props, ref) => {
                   }
                   onBlur={handleInputSave}
                 />
+                {errors.storeDoorImg && (
+                  <small className="text-danger">{errors.storeDoorImg}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>门店店内照片或者摊位照侧面</FormLabel>
+                <FormLabel>
+                  门店店内照片或者摊位照侧面{" "}
+                  <span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="file"
                   multiple
@@ -417,6 +609,9 @@ const Step3 = React.forwardRef((props, ref) => {
                   }
                   onBlur={handleInputSave}
                 />
+                {errors.storeInnerImg && (
+                  <small className="text-danger">{errors.storeInnerImg}</small>
+                )}
               </FormGroup>
             </>
           )}

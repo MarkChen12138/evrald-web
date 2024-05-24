@@ -6,6 +6,7 @@ import {
   FormControl,
   FormLabel,
   Button,
+  Form,
 } from "react-bootstrap";
 
 const Step1 = React.forwardRef((props, ref) => {
@@ -18,77 +19,78 @@ const Step1 = React.forwardRef((props, ref) => {
 
   const handleInputSave = () => {
     props.updateStep1Data({ email, invitationCode, companyName });
+    validateAllFields();
   };
 
-  const isValidated = () => {
-    console.log("hey");
-    var re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    re.test(email) === false
-      ? setEmailError(
-          <small className="text-danger">
-            Email is required and format should be <i>john@doe.com</i>.
-          </small>
-        )
-      : setEmailError(null);
-    return re.test(email);
+  const emailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  const validateAllFields = () => {
+    const isEmailValid = emailRegex.test(email);
+    setEmailError(
+      isEmailValid ? null : (
+        <small className="text-danger">
+          Email is required and format should be <i>john@doe.com</i>.
+        </small>
+      )
+    );
+
+    const invitationCodeRegex = /^[A-Z0-9]+$/;
+    const isInvitationCodeValid = invitationCodeRegex.test(invitationCode);
+    setInvitationCodeError(
+      isInvitationCodeValid ? null : (
+        <small className="text-danger">
+          Invitation code is required and should only contain uppercase letters
+          and numbers.
+        </small>
+      )
+    );
+
+    const isCompanyNameValid = companyName.trim() !== "";
+    setCompanyNamelError(
+      isCompanyNameValid ? null : (
+        <small className="text-danger">Company name is required.</small>
+      )
+    );
+
+    return isEmailValid && isInvitationCodeValid && isCompanyNameValid;
   };
+
   React.useImperativeHandle(ref, () => ({
-    isValidated: () => {
-      console.log("hey from use");
-      return isValidated();
-    },
+    isInvitationCodeValidated: validateAllFields,
+    isValidated: validateAllFields,
   }));
 
-  const isInvitationCodeValidated = () => {
-    console.log("hey");
-    var re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    re.test(invitationCode) === false
-      ? setInvitationCodeError(
-          <small className="text-danger">
-            InvitationCode is required and format should be <i>john@doe.com</i>.
-          </small>
-        )
-      : setInvitationCodeError(null);
-    return re.test(InvitationCode);
-  };
-  React.useImperativeHandle(ref, () => ({
-    isInvitationCodeValidated: () => {
-      console.log("hey from use");
-      return isInvitationCodeValidated();
-    },
-  }));
   return (
     <div className="wizard-step" ref={ref}>
       <p className="text-center">Please tell us more about yourself.</p>
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
-          <FormGroup>
+          <FormGroup className={invitationCodeError ? "has-error" : ""}>
             <FormLabel>
               邀请码 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"
               name="invitationCode"
-              placeholder="ex:EV213H2UH8MS"
+              placeholder="ex: EV213H2UH8MS"
               value={invitationCode}
               onChange={(event) => setInvitationCode(event.target.value)}
-              onBlur={handleInputSave}
+              onBlur={validateAllFields}
             />
             {invitationCodeError}
           </FormGroup>
-          <FormGroup>
+          <FormGroup className={companyNameError ? "has-error" : ""}>
             <FormLabel>
               名称 <span className="text-danger">*</span>
             </FormLabel>
             <FormControl
               type="text"
-              name="last_name"
+              name="companyName"
               placeholder="ex: 河北常青实业有限公司"
               value={companyName}
               onChange={(event) => setCompanyName(event.target.value)}
-              // onBlur={handleInputSave}
+              onBlur={validateAllFields}
             />
             {companyNameError}
           </FormGroup>
@@ -96,7 +98,7 @@ const Step1 = React.forwardRef((props, ref) => {
       </Row>
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
-          <FormGroup>
+          <FormGroup className={emailError ? "has-error" : ""}>
             <FormLabel>
               Email <span className="text-danger">*</span>
             </FormLabel>
@@ -106,7 +108,7 @@ const Step1 = React.forwardRef((props, ref) => {
               placeholder="ex: hello@creative-tim.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              onBlur={handleInputSave}
+              onBlur={validateAllFields}
             />
             {emailError}
           </FormGroup>

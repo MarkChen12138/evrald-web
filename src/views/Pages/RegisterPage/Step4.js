@@ -28,6 +28,7 @@ const Step4 = React.forwardRef((props, ref) => {
   const [cardBackImg, setCardBackImg] = React.useState(null);
   const [authLetterImg, setAuthLetterImg] = React.useState(null);
   const [isBenefitPerson, setIsBenefitPerson] = React.useState(true);
+  const [errors, setErrors] = React.useState({});
 
   const cardTypes = [
     { value: "RESIDENT", label: "居民身份证" },
@@ -95,27 +96,57 @@ const Step4 = React.forwardRef((props, ref) => {
     }
   };
 
-  // 验证证件号码
-  const validateCardNumber = () => {
-    if (legalCardNumber.trim() === "") {
-      setLegalCardNumberError("证件号码不能为空");
-      return false;
-    } else {
-      setLegalCardNumberError(null);
-      return true;
+  const validateForm = () => {
+    let newErrors = {};
+    if (!legalName.trim()) {
+      newErrors.legalName = "法人名字不能为空";
     }
+
+    if (!legalPhoneNumber.trim()) {
+      newErrors.legalPhoneNumber = "法人电话不能为空";
+    } else if (validatePhoneNumber()) {
+      newErrors.legalPhoneNumber = "电话号码格式不正确";
+    }
+
+    if (!legalCardNumber.trim()) {
+      newErrors.legalCardNumber = "证件号码不能为空";
+    }
+    if (!cardType) {
+      newErrors.cardType = "证件类型不能为空";
+    }
+    if (!effectTime) {
+      newErrors.effectTime = "证照生效时间不能为空";
+    }
+    if (!expireTime) {
+      newErrors.expireTime = "证照过期时间不能为空";
+    }
+    if (!cardFontImg) {
+      newErrors.cardFontImg = "证件正面照不能为空";
+    }
+    if (props.identityType === "GOV" || props.identityType === "INST") {
+      if (!legalType) {
+        newErrors.legalType = "证件持有人类型不能为空";
+      }
+    }
+    if (cardType === "RESIDENT") {
+      if (!cardBackImg) {
+        newErrors.cardBackImg = "证件反面照不能为空";
+      }
+    }
+    if (legalType === "AGENT_PERSON") {
+      if (!authLetterImg) {
+        newErrors.authLetterImg = "授权函照片不能为空";
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   // 综合验证所有字段
-  const isValidated = () => {
-    const isNameValid = validateName();
-    const isPhoneValid = validatePhoneNumber();
-    const isCardValid = validateCardNumber();
-    return isNameValid && isPhoneValid && isCardValid;
-  };
 
   React.useImperativeHandle(ref, () => ({
-    isValidated,
+    isValidated: validateForm,
+    handleInputSave: handleInputSave,
   }));
 
   return (
@@ -134,6 +165,9 @@ const Step4 = React.forwardRef((props, ref) => {
               onChange={(selectedOption) => setCardType(selectedOption.value)}
               onBlur={handleInputSave}
             />
+            {errors.cardType && (
+              <small className="text-danger">{errors.cardType}</small>
+            )}
           </FormGroup>
           <FormGroup>
             <FormLabel>
@@ -147,8 +181,8 @@ const Step4 = React.forwardRef((props, ref) => {
               onChange={(e) => setLegalName(e.target.value)}
               onBlur={validateName}
             />
-            {legalNameError && (
-              <small className="text-danger">{legalNameError}</small>
+            {errors.legalName && (
+              <small className="text-danger">{errors.legalName}</small>
             )}
           </FormGroup>
           <FormGroup>
@@ -163,8 +197,8 @@ const Step4 = React.forwardRef((props, ref) => {
               onChange={(e) => setLegalPhoneNumber(e.target.value)}
               onBlur={validatePhoneNumber}
             />
-            {legalPhoneNumberError && (
-              <small className="text-danger">{legalPhoneNumberError}</small>
+            {errors.legalPhoneNumber && (
+              <small className="text-danger">{errors.legalPhoneNumber}</small>
             )}
           </FormGroup>
           <FormGroup>
@@ -177,10 +211,10 @@ const Step4 = React.forwardRef((props, ref) => {
               placeholder="请输入您的证件号码"
               value={legalCardNumber}
               onChange={(e) => setLegalCardNumber(e.target.value)}
-              onBlur={validateCardNumber}
+              onBlur={handleInputSave}
             />
-            {legalCardNumberError && (
-              <small className="text-danger">{legalCardNumberError}</small>
+            {errors.legalCardNumber && (
+              <small className="text-danger">{errors.legalCardNumber}</small>
             )}
           </FormGroup>
           <FormGroup>
@@ -191,6 +225,9 @@ const Step4 = React.forwardRef((props, ref) => {
               onChange={(e) => setEffectTime(e.target.value)}
               onBlur={handleInputSave}
             />
+            {errors.effectTime && (
+              <small className="text-danger">{errors.effectTime}</small>
+            )}
           </FormGroup>
           <FormGroup>
             <FormLabel>证照过期时间</FormLabel>
@@ -200,6 +237,9 @@ const Step4 = React.forwardRef((props, ref) => {
               onChange={(e) => setExpireTime(e.target.value)}
               onBlur={handleInputSave}
             />
+            {errors.expireTime && (
+              <small className="text-danger">{errors.expireTime}</small>
+            )}
           </FormGroup>
           <FormGroup>
             <FormLabel>法人/经营者证件正面照</FormLabel>
@@ -214,6 +254,9 @@ const Step4 = React.forwardRef((props, ref) => {
               }
               onBlur={handleInputSave}
             />
+            {errors.cardFontImg && (
+              <small className="text-danger">{errors.cardFontImg}</small>
+            )}
           </FormGroup>
           {(props.identityType === "GOV" || props.identityType === "INST") && (
             <FormGroup>
@@ -231,6 +274,9 @@ const Step4 = React.forwardRef((props, ref) => {
                 }
                 onBlur={handleInputSave}
               />
+              {errors.legalType && (
+                <small className="text-danger">{errors.legalType}</small>
+              )}
             </FormGroup>
           )}
           {cardType === "RESIDENT" && (
@@ -247,6 +293,9 @@ const Step4 = React.forwardRef((props, ref) => {
                 }
                 onBlur={handleInputSave}
               />
+              {errors.cardBackImg && (
+                <small className="text-danger">{errors.cardBackImg}</small>
+              )}
             </FormGroup>
           )}
           {legalType === "AGENT_PERSON" && (
@@ -263,6 +312,9 @@ const Step4 = React.forwardRef((props, ref) => {
                 }
                 onBlur={handleInputSave}
               />
+              {errors.authLetterImg && (
+                <small className="text-danger">{errors.authLetterImg}</small>
+              )}
             </FormGroup>
           )}
 
@@ -278,6 +330,9 @@ const Step4 = React.forwardRef((props, ref) => {
               placeholder="经营者/法人是否为受益人"
               onBlur={handleInputSave}
             />
+            {errors.isBenefitPerson && (
+              <small className="text-danger">{errors.isBenefitPerson}</small>
+            )}
           </FormGroup>
         </Col>
       </Row>
