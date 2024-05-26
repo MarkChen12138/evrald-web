@@ -32,10 +32,11 @@ const Step5 = React.forwardRef((props, ref) => {
   const [benefitCardNumber, setBenefitCardNumber] = React.useState("");
   const [benefitCardNumberError, setBenefitCardNumberError] =
     React.useState(null);
-  const [cardFontImg, setCardFontImg] = React.useState([]);
+  const [cardFontImg, setCardFontImg] = React.useState(null);
   const [cardBackImg, setCardBackImg] = React.useState(null);
   const [effectTime, setEffectTime] = React.useState("");
   const [expireTime, setExpireTime] = React.useState("");
+  const [errors, setErrors] = React.useState({});
 
   // 验证姓名
   const validateName = () => {
@@ -71,15 +72,44 @@ const Step5 = React.forwardRef((props, ref) => {
     }
   };
 
-  // 综合验证所有字段
-  const isValidated = () => {
-    const isNameValid = validateName();
-    const isPhoneValid = validatePhoneNumber();
-    const isCardValid = validateCardNumber();
-    return isNameValid && isPhoneValid && isCardValid;
+  const validateForm = () => {
+    let newErrors = {};
+    if (!benefitName.trim()) {
+      newErrors.benefitName = "受益人名字不能为空";
+    }
+
+    if (!benefitPhoneNumber.trim()) {
+      newErrors.benefitPhoneNumber = "受益人电话不能为空";
+    } else if (!validatePhoneNumber()) {
+      newErrors.benefitPhoneNumber = "电话号码格式不正确";
+    }
+
+    if (!beCardNumber.trim()) {
+      newErrors.benefitCardNumber = "证件号码不能为空";
+    }
+    if (!cardType) {
+      newErrors.cardType = "证件类型不能为空";
+    }
+    if (!effectTime) {
+      newErrors.effectTime = "证照生效时间不能为空";
+    }
+    if (!expireTime) {
+      newErrors.expireTime = "证照过期时间不能为空";
+    }
+    if (!cardFontImg) {
+      newErrors.cardFontImg = "证件正面照不能为空";
+    }
+    if (cardType === "RESIDENT") {
+      if (!cardBackImg) {
+        newErrors.cardBackImg = "证件反面照不能为空";
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleInputSave = () => {
+    console.log(errors.benefitCardNumber);
     const Step5Data = {
       benefit_person_info: {
         person_name: benefitName,
@@ -97,7 +127,7 @@ const Step5 = React.forwardRef((props, ref) => {
   };
 
   React.useImperativeHandle(ref, () => ({
-    isValidated,
+    isvalidated: validateForm,
   }));
 
   return (
@@ -134,8 +164,8 @@ const Step5 = React.forwardRef((props, ref) => {
                   onChange={(e) => setBenefitName(e.target.value)}
                   onBlur={handleInputSave}
                 />
-                {benefitNameError && (
-                  <small className="text-danger">{benefitNameError}</small>
+                {errors.benefitName && (
+                  <small className="text-danger">{errors.benefitName}</small>
                 )}
               </FormGroup>
               <FormGroup>
@@ -150,9 +180,9 @@ const Step5 = React.forwardRef((props, ref) => {
                   onChange={(e) => setBenefitPhoneNumber(e.target.value)}
                   onBlur={handleInputSave}
                 />
-                {benefitPhoneNumberError && (
+                {errors.benefitPhoneNumber && (
                   <small className="text-danger">
-                    {benefitPhoneNumberError}
+                    {errors.benefitPhoneNumber}
                   </small>
                 )}
               </FormGroup>
@@ -185,6 +215,9 @@ const Step5 = React.forwardRef((props, ref) => {
                   onChange={(e) => setEffectTime(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.effectTime && (
+                  <small className="text-danger">{errors.effectTime}</small>
+                )}
               </FormGroup>
               <FormGroup>
                 <FormLabel>
@@ -196,9 +229,14 @@ const Step5 = React.forwardRef((props, ref) => {
                   onChange={(e) => setExpireTime(e.target.value)}
                   onBlur={handleInputSave}
                 />
+                {errors.expireTime && (
+                  <small className="text-danger">{errors.expireTime}</small>
+                )}
               </FormGroup>
               <FormGroup>
-                <FormLabel>法人/经营者证件正面照</FormLabel>
+                <FormLabel>
+                  受益人/经营者证件正面照<span className="text-danger">*</span>
+                </FormLabel>
                 <FormControl
                   type="file"
                   multiple
@@ -210,10 +248,16 @@ const Step5 = React.forwardRef((props, ref) => {
                   }
                   onBlur={handleInputSave}
                 />
+                {errors.cardFontImg && (
+                  <small className="text-danger">{errors.cardFontImg}</small>
+                )}
               </FormGroup>
               {cardType === "RESIDENT" && (
                 <FormGroup>
-                  <FormLabel>法人/经营者证件反面照</FormLabel>
+                  <FormLabel>
+                    受益人/经营者证件反面照
+                    <span className="text-danger">*</span>
+                  </FormLabel>
                   <FormControl
                     type="file"
                     multiple
@@ -225,6 +269,9 @@ const Step5 = React.forwardRef((props, ref) => {
                     }
                     onBlur={handleInputSave}
                   />
+                  {errors.cardBackImg && (
+                    <small className="text-danger">{errors.cardBackImg}</small>
+                  )}
                 </FormGroup>
               )}
             </Col>

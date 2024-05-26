@@ -35,6 +35,7 @@ const Step3 = React.forwardRef((props, ref) => {
   const [storeDoorImg, setStoreDoorImg] = useState([]);
   const [storeInnerImg, setStoreInnerImg] = useState([]);
   const [errors, setErrors] = useState({});
+  const [certImageName, setCertImageName] = useState([]);
 
   const identityOptions = [
     { value: "ENTERPRISE", label: "企业" },
@@ -100,9 +101,9 @@ const Step3 = React.forwardRef((props, ref) => {
     if (files) {
       const filenames = Array.from(files).map((file) => file.name);
       console.log(filenames);
-      setCertImage(filenames);
+      setCertImageName(filenames);
     } else {
-      setCertImage([]);
+      setCertImageName([]);
     }
     handleInputSave();
   };
@@ -123,7 +124,7 @@ const Step3 = React.forwardRef((props, ref) => {
       if (
         certType !== "" &&
         certNo !== "" &&
-        certImage !== "" &&
+        certImageName !== null &&
         merchantName !== "" &&
         legalPersonName !== "" &&
         registerAddress !== "" &&
@@ -133,7 +134,7 @@ const Step3 = React.forwardRef((props, ref) => {
         authIdentityInfo.certificate_info = {
           cert_type: certType,
           cert_no: certNo,
-          cert_image: certImage,
+          cert_image: certImageName,
           merchant_name: merchantName,
           legal_person_name: legalPersonName,
           register_address: registerAddress,
@@ -184,10 +185,13 @@ const Step3 = React.forwardRef((props, ref) => {
     if (!legalPersonName.trim()) newErrors.legalPersonName = "法人姓名不能为空";
     if (!registerAddress.trim()) newErrors.registerAddress = "注册地址不能为空";
     if (!certNo.trim()) newErrors.certNo = "证件编号不能为空";
-    if (isFinancialOrg && !financialOrgType)
-      newErrors.financialOrgType = "请选择金融机构类型";
-    if (financialOrgCertImg.length === 0)
-      newErrors.financialOrgCertImg = "请上传金融机构许可证图片";
+    if (isFinancialOrg) {
+      if (!financialOrgType.trim()) {
+        newErrors.financialOrgType = "请选择金融机构类型";
+      }
+      if (financialOrgCertImg.length === 0)
+        newErrors.financialOrgCertImg = "请上传金融机构许可证图片";
+    }
     if (requiredCertificateTypes.includes(identityType)) {
       if (!certNo.trim()) newErrors.certNo = "证件编号不能为空";
       if (!merchantName.trim()) newErrors.merchantName = "商户名称不能为空";
@@ -377,6 +381,7 @@ const Step3 = React.forwardRef((props, ref) => {
                   placeholder="请输入图片链接"
                   onChange={handleCertImageChange}
                 />
+                {}
               </FormGroup>
               <FormGroup>
                 <FormLabel>

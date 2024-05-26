@@ -23,7 +23,7 @@ const Step4 = React.forwardRef((props, ref) => {
   const [legalCardNumberError, setLegalCardNumberError] = React.useState(null);
   const [effectTime, setEffectTime] = React.useState("");
   const [expireTime, setExpireTime] = React.useState("");
-  const [cardFontImg, setCardFontImg] = React.useState([]);
+  const [cardFontImg, setCardFontImg] = React.useState(null);
   const [legalType, setLegalType] = React.useState("");
   const [cardBackImg, setCardBackImg] = React.useState(null);
   const [authLetterImg, setAuthLetterImg] = React.useState(null);
@@ -51,26 +51,27 @@ const Step4 = React.forwardRef((props, ref) => {
   ];
 
   const handleInputSave = () => {
-    console.log(props.identityType);
-    const Step4Data = {
-      card_type: cardType,
-      person_name: legalName,
-      card_no: legalCardNumber,
-      effect_time: effectTime,
-      expire_time: expireTime,
-      card_font_img: cardFontImg,
-    };
-    if (props.identityType === "GOV" || props.identityType === "INST") {
-      Step4Data.legal_type = legalType;
+    if (validateForm()) {
+      const Step4Data = {
+        card_type: cardType,
+        person_name: legalName,
+        card_no: legalCardNumber,
+        effect_time: effectTime,
+        expire_time: expireTime,
+        card_font_img: cardFontImg,
+      };
+      if (props.identityType === "GOV" || props.identityType === "INST") {
+        Step4Data.legal_type = legalType;
+      }
+      if (cardType === "RESIDENT") {
+        Step4Data.card_back_img = cardBackImg;
+      }
+      if (legalType === "AGENT_PERSON") {
+        Step4Data.auth_letter_img = authLetterImg;
+      }
+      Step4Data.is_benefit_person = isBenefitPerson;
+      props.updateStep4Data(Step4Data);
     }
-    if (cardType === "RESIDENT") {
-      Step4Data.card_back_img = cardBackImg;
-    }
-    if (legalType === "AGENT_PERSON") {
-      Step4Data.auth_letter_img = authLetterImg;
-    }
-    Step4Data.is_benefit_person = isBenefitPerson;
-    props.updateStep4Data(Step4Data);
   };
 
   // 验证姓名
@@ -104,7 +105,7 @@ const Step4 = React.forwardRef((props, ref) => {
 
     if (!legalPhoneNumber.trim()) {
       newErrors.legalPhoneNumber = "法人电话不能为空";
-    } else if (validatePhoneNumber()) {
+    } else if (!validatePhoneNumber()) {
       newErrors.legalPhoneNumber = "电话号码格式不正确";
     }
 

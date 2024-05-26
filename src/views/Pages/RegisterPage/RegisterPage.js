@@ -26,6 +26,7 @@ import Step4 from "./Step4.js";
 import Step5 from "./Step5.js";
 
 function RegisterPage() {
+  const [isvalidated, setIsValidated] = React.useState(false);
   const [step1Data, setStep1Data] = React.useState({
     email: "",
     invitationCode: "",
@@ -113,12 +114,14 @@ function RegisterPage() {
         isBenefitPersonInfoRequired:
           step3Data.auth_identity_info.identity_type === "ENTERPRISE" &&
           !step4Data.legal_person_info.is_benefit_person,
+        setIsValidated,
       },
     },
   ];
 
   const [alertState, setAlertState] = React.useState(false);
   const [cardClasses, setCardClasses] = React.useState("card-hidden");
+
   React.useEffect(() => {
     setTimeout(function () {
       setCardClasses("");
@@ -150,18 +153,23 @@ function RegisterPage() {
                   nextButtonClasses="btn-info btn-wd"
                   previousButtonClasses="btn-wd"
                   finishButtonClick={() => {
-                    setAlertState(
-                      <SweetAlert
-                        success
-                        style={{ display: "block", marginTop: "-100px" }}
-                        title="Good job!"
-                        onConfirm={() => setAlertState(null)}
-                        onCancel={() => setAlertState(null)}
-                        confirmBtnBsStyle="info"
-                      >
-                        You clicked the finish button!
-                      </SweetAlert>
-                    );
+                    if (isvalidated) {
+                      setAlertState(
+                        <SweetAlert
+                          success
+                          style={{
+                            display: "block",
+                            marginTop: "-100px",
+                          }}
+                          title="Good job!"
+                          onConfirm={() => setAlertState(null)}
+                          onCancel={() => setAlertState(null)}
+                          confirmBtnBsStyle="info"
+                        >
+                          You clicked the finish button!
+                        </SweetAlert>
+                      );
+                    }
                   }}
                 />
               </Col>
