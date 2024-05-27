@@ -27,7 +27,7 @@ import Step5 from "./Step5.js";
 
 function RegisterPage() {
   const [isvalidated, setIsValidated] = React.useState(false);
-  const [files, setFiles] = React.useState(null);
+  const [step3Files, setStep3Files] = React.useState(null);
   // const [step1Data, setStep1Data] = React.useState({
   //   email: "",
   //   invitationCode: "",
@@ -92,12 +92,12 @@ function RegisterPage() {
     {
       stepName: "联系人信息",
       component: Step2,
-      stepProps: { updateStep2Data, files: files, setFiles },
+      stepProps: { updateStep2Data },
     },
     {
       stepName: "主体信息",
       component: Step3,
-      stepProps: { updateStep3Data, files: files, setFiles },
+      stepProps: { updateStep3Data, setStep3Files },
     },
     {
       stepName: "法人身份信息",

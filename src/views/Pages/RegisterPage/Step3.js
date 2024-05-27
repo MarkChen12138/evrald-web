@@ -13,9 +13,7 @@ const Step3 = React.forwardRef((props, ref) => {
   const [identityType, setIdentityType] = useState("ENTERPRISE");
   const [isFinancialOrg, setIsFinancialOrg] = useState(false);
   const [financialOrgType, setFinancialOrgType] = useState("");
-  const [financialOrgCertImg, setFinancialOrgCertImg] = useState(null);
-  const [financialOrgCertImagesName, setFinancialOrgCertImagesName] =
-    useState(null);
+  const [financialOrgCertImg, setFinancialOrgCertImg] = useState([]);
   const [certificateType, setCertificateType] = useState("");
   const [certType, setCertType] = useState("");
   const [certNo, setCertNo] = useState("");
@@ -24,17 +22,17 @@ const Step3 = React.forwardRef((props, ref) => {
   const [registerAddress, setRegisterAddress] = useState("");
   const [effectTime, setEffectTime] = useState("");
   const [expireTime, setExpireTime] = useState("");
-  const [requiredEmployerLetter, setRequiredEmployerLetter] = useState(null);
+  const [employerLetterImg, setEmployerLetter] = useState([]);
   const [merchantType, setMerchantType] = useState("");
   const [storeName, setStoreName] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [storeAddress, setStoreAddress] = useState("");
-  const [storeDoorImg, setStoreDoorImg] = useState(null);
-  const [storeInnerImg, setStoreInnerImg] = useState(null);
+  const [storeDoorImg, setStoreDoorImg] = useState([]);
+  const [storeInnerImg, setStoreInnerImg] = useState([]);
   const [errors, setErrors] = useState({});
-  const [certImageName, setCertImageName] = useState(null);
+  const [certImg, setCertImg] = useState([]);
 
   const identityOptions = [
     { value: "ENTERPRISE", label: "企业" },
@@ -84,28 +82,28 @@ const Step3 = React.forwardRef((props, ref) => {
 
   const requiredEmployerLetterTypes = ["GOV", "INST"];
 
-  const handleFinancialOrgCertImagesNameChange = (event) => {
-    const files = event.target.files;
-    if (files) {
-      const filenames = Array.from(files).map((file) => file.name);
-      console.log(filenames);
-      setFinancialOrgCertImagesName(filenames);
-    } else {
-      setFinancialOrgCertImagesName(null);
-    }
-  };
+  // const handleFinancialOrgCertImgsNameChange = (event) => {
+  //   const files = event.target.files;
+  //   if (files) {
+  //     const filenames = Array.from(files).map((file) => file.name);
+  //     console.log(filenames);
+  //     setFinancialOrgCertImgsName(filenames);
+  //   } else {
+  //     setFinancialOrgCertImgsName(null);
+  //   }
+  // };
 
-  const handleCertImageChange = (event) => {
-    const files = event.target.files;
-    if (files) {
-      const filenames = Array.from(files).map((file) => file.name);
-      console.log(filenames);
-      setCertImageName(filenames);
-    } else {
-      setCertImageName(null);
-    }
-    handleInputSave();
-  };
+  // const handleCertImgChange = (event) => {
+  //   const files = event.target.files;
+  //   if (files) {
+  //     const filenames = Array.from(files).map((file) => file.name);
+  //     console.log(filenames);
+  //     setCertImgName(filenames);
+  //   } else {
+  //     setCertImgName(null);
+  //   }
+  //   handleInputSave();
+  // };
 
   const handleInputSave = () => {
     if (validateForm()) {
@@ -116,14 +114,16 @@ const Step3 = React.forwardRef((props, ref) => {
       if (isFinancialOrg) {
         authIdentityInfo.financial_org_info = {
           financial_org_type: financialOrgType,
-          financial_org_cert_img: financialOrgCertImagesName,
+          financial_org_cert_img: Array.from(financialOrgCertImg).map(
+            (file) => file.name
+          ),
         };
       }
       authIdentityInfo.certificate_type = certificateType;
       if (
         certType !== "" &&
         certNo !== "" &&
-        certImageName !== null &&
+        certImg !== null &&
         merchantName !== "" &&
         legalPersonName !== "" &&
         registerAddress !== "" &&
@@ -133,7 +133,7 @@ const Step3 = React.forwardRef((props, ref) => {
         authIdentityInfo.certificate_info = {
           cert_type: certType,
           cert_no: certNo,
-          cert_image: certImageName,
+          cert_image: certImg[0].name,
           merchant_name: merchantName,
           legal_person_name: legalPersonName,
           register_address: registerAddress,
@@ -141,8 +141,8 @@ const Step3 = React.forwardRef((props, ref) => {
           expire_time: expireTime,
         };
       }
-      if (requiredEmployerLetter !== "") {
-        authIdentityInfo.employer_letter = requiredEmployerLetter;
+      if (employerLetterImg.length !== 0) {
+        authIdentityInfo.employer_letter_img = employerLetterImg[0].name;
       }
       if (identityType === "MSE") {
         authIdentityInfo.merchant_info = {
@@ -157,20 +157,22 @@ const Step3 = React.forwardRef((props, ref) => {
         };
       }
       props.updateStep3Data(authIdentityInfo);
+      props.setStep3Files({});
     }
+    console.log("employerLetterImg", employerLetterImg);
   };
 
-  const setCertImage = () => {
-    const files = event.target.files;
-    if (files) {
-      const filenames = Array.from(files).map((file) => file.name);
-      console.log(filenames);
-      setCertImage(filenames);
-    } else {
-      setCertImage(null);
-    }
-    handleInputSave();
-  };
+  // const setCertImg = () => {
+  //   const files = event.target.files;
+  //   if (files) {
+  //     const filenames = Array.from(files).map((file) => file.name);
+  //     console.log(filenames);
+  //     setCertImg(filenames);
+  //   } else {
+  //     setCertImg(null);
+  //   }
+  //   handleInputSave();
+  // };
 
   React.useImperativeHandle(ref, () => ({
     isValidated: validateForm,
@@ -188,8 +190,11 @@ const Step3 = React.forwardRef((props, ref) => {
       if (!financialOrgType.trim()) {
         newErrors.financialOrgType = "请选择金融机构类型";
       }
-      if (financialOrgCertImg.length === 0)
+      if (financialOrgCertImg.length === 0) {
         newErrors.financialOrgCertImg = "请上传金融机构许可证图片";
+      } else if (financialOrgCertImg.length > 5) {
+        newErrors.financialOrgCertImg = "最多上传五张图片";
+      }
     }
     if (requiredCertificateTypes.includes(identityType)) {
       if (!certNo.trim()) newErrors.certNo = "证件编号不能为空";
@@ -205,8 +210,8 @@ const Step3 = React.forwardRef((props, ref) => {
       }
     }
     if (requiredEmployerLetterTypes.includes(identityType)) {
-      if (requiredEmployerLetter.length === 0)
-        newErrors.requiredEmployerLetter = "请上传单位证明函照片";
+      if (employerLetterImg.length === 0)
+        newErrors.employerLetterImg = "请上传单位证明函照片";
     }
     if (identityType === "MSE") {
       if (!storeName.trim()) newErrors.storeName = "门店名称不能为空";
@@ -300,13 +305,7 @@ const Step3 = React.forwardRef((props, ref) => {
                   type="file"
                   multiple
                   accept="image/*"
-                  onChange={(event) => {
-                    const files = event.target.files;
-                    const filenames = Array.from(files).map(
-                      (file) => file.name
-                    );
-                    setFinancialOrgCertImg(filenames);
-                  }}
+                  onChange={(e) => setFinancialOrgCertImg(e.target.files)}
                   onBlur={handleInputSave}
                 />
                 {errors.financialOrgCertImg && (
@@ -376,9 +375,9 @@ const Step3 = React.forwardRef((props, ref) => {
                 </FormLabel>
                 <FormControl
                   type="file"
-                  multiple
+                  accept="image/*"
                   placeholder="请输入图片链接"
-                  onChange={handleCertImageChange}
+                  onChange={(e) => setCertImg(e.target.files)}
                 />
                 {}
               </FormGroup>
@@ -470,16 +469,12 @@ const Step3 = React.forwardRef((props, ref) => {
               <FormControl
                 type="file"
                 mutiple
-                onChange={(e) =>
-                  setRequiredEmployerLetter(
-                    Array.from(e.target.files).map((file) => file.name)
-                  )
-                }
+                onChange={(e) => setEmployerLetter(e.target.files)}
                 onBlur={handleInputSave}
               />
-              {errors.requiredEmployerLetter && (
+              {errors.employerLetterImg && (
                 <small className="text-danger">
-                  {errors.requiredEmployerLetter}
+                  {errors.employerLetterImg}
                 </small>
               )}
             </FormGroup>
