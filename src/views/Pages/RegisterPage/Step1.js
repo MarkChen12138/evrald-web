@@ -6,64 +6,100 @@ import {
   FormControl,
   FormLabel,
   Button,
-  Form,
 } from "react-bootstrap";
+import SweetAlert from "react-bootstrap-sweetalert"; // 确保你已经安装了这个包
 
 const Step1 = React.forwardRef((props, ref) => {
-  const [email, setEmail] = React.useState("");
-  const [emailError, setEmailError] = React.useState(null);
   const [invitationCode, setInvitationCode] = React.useState("");
   const [invitationCodeError, setInvitationCodeError] = React.useState(null);
-  const [companyName, setCompanyName] = React.useState("");
-  const [companyNameError, setCompanyNamelError] = React.useState(null);
+  const [alertState, setAlertState] = React.useState(null);
+  const [isFetching, setIsFetching] = React.useState(false); // State to handle fetching
 
-  const handleInputSave = () => {
-    props.updateStep1Data({ email, invitationCode, companyName });
-    validateAllFields();
-  };
+  // const handleValidationClick = async () => {
+  //   if (!validateAllFields()) return; // Prevent fetching if fields are invalid
 
-  const emailRegex =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //   setIsFetching(true);
+  //   try {
+  //     const response = await fetch(
+  //       `url/validate-invitation?code=${invitationCode}`,
+  //       {
+  //         method: "GET", // or 'POST' depending on your backend
+  //       }
+  //     );
+  //     const data = await response.json();
 
-  const validateAllFields = () => {
-    const isEmailValid = emailRegex.test(email);
-    setEmailError(
-      isEmailValid ? null : (
-        <small className="text-danger">
-          Email is required and format should be <i>john@doe.com</i>.
-        </small>
-      )
-    );
+  //     if (response.ok && data.isValid) {
+  //       setAlertState(
+  //         <SweetAlert
+  //           success
+  //           style={{ display: "block", marginTop: "-100px" }}
+  //           title="Good job!"
+  //           onConfirm={() => setAlertState(null)}
+  //           onCancel={() => setAlertState(null)}
+  //           confirmBtnBsStyle="info"
+  //         >
+  //           You clicked the finish button!
+  //         </SweetAlert>
+  //       );
+  //     } else {
+  //       setInvitationCodeError(
+  //         <small className="text-danger">邀请码不正确或已过期</small>
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to validate invitation code:", error);
+  //     // Handle errors appropriately
+  //   } finally {
+  //     setIsFetching(false);
+  //   }
+  // };
 
+  const validateInvitationCode = () => {
     const invitationCodeRegex = /^[A-Z0-9]+$/;
-    const isInvitationCodeValid = invitationCodeRegex.test(invitationCode);
+    const isValid = invitationCodeRegex.test(invitationCode);
     setInvitationCodeError(
-      isInvitationCodeValid ? null : (
+      isValid ? null : (
         <small className="text-danger">
-          Invitation code is required and should only contain uppercase letters
-          and numbers.
+          邀请码是必须的，且只能包含大写字母和数字。
         </small>
       )
     );
 
-    const isCompanyNameValid = companyName.trim() !== "";
-    setCompanyNamelError(
-      isCompanyNameValid ? null : (
-        <small className="text-danger">Company name is required.</small>
-      )
-    );
-
-    return isEmailValid && isInvitationCodeValid && isCompanyNameValid;
+    return isValid;
   };
 
-  React.useImperativeHandle(ref, () => ({
-    isInvitationCodeValidated: validateAllFields,
-    isValidated: validateAllFields,
-  }));
+  const handleValidationClick = async () => {
+    if (!validateInvitationCode()) return; // Prevent action if field is invalid
+
+    setIsFetching(true);
+    // Simulate an API call
+    setTimeout(() => {
+      // Assume 'ABC123' is the valid invitation code for demonstration
+      if (invitationCode === "ABC123") {
+        setAlertState(
+          <SweetAlert
+            success
+            style={{ display: "block", marginTop: "-100px" }}
+            title="验证成功!"
+            onConfirm={() => setAlertState(null)}
+            onCancel={() => setAlertState(null)}
+            confirmBtnBsStyle="info"
+          >
+            您的邀请码已通过验证。
+          </SweetAlert>
+        );
+      } else {
+        setInvitationCodeError(
+          <small className="text-danger">邀请码不正确或已过期</small>
+        );
+      }
+      setIsFetching(false);
+    }, 1000); // Delay to mimic server response time
+  };
 
   return (
     <div className="wizard-step" ref={ref}>
-      <p className="text-center">Please tell us more about yourself.</p>
+      <p className="text-center">请输入您的邀请码以继续。</p>
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
           <FormGroup className={invitationCodeError ? "has-error" : ""}>
@@ -73,47 +109,19 @@ const Step1 = React.forwardRef((props, ref) => {
             <FormControl
               type="text"
               name="invitationCode"
-              placeholder="ex: EV213H2UH8MS"
+              placeholder="例如：ABC123"
               value={invitationCode}
               onChange={(event) => setInvitationCode(event.target.value)}
-              onBlur={validateAllFields}
+              onBlur={validateInvitationCode}
             />
             {invitationCodeError}
           </FormGroup>
-          <FormGroup className={companyNameError ? "has-error" : ""}>
-            <FormLabel>
-              名称 <span className="text-danger">*</span>
-            </FormLabel>
-            <FormControl
-              type="text"
-              name="companyName"
-              placeholder="ex: 河北常青实业有限公司"
-              value={companyName}
-              onChange={(event) => setCompanyName(event.target.value)}
-              onBlur={validateAllFields}
-            />
-            {companyNameError}
-          </FormGroup>
+          <Button onClick={handleValidationClick} disabled={isFetching}>
+            验证
+          </Button>
         </Col>
       </Row>
-      <Row>
-        <Col md={{ span: 10, offset: 1 }}>
-          <FormGroup className={emailError ? "has-error" : ""}>
-            <FormLabel>
-              Email <span className="text-danger">*</span>
-            </FormLabel>
-            <FormControl
-              type="email"
-              name="email"
-              placeholder="ex: hello@creative-tim.com"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              onBlur={validateAllFields}
-            />
-            {emailError}
-          </FormGroup>
-        </Col>
-      </Row>
+      {alertState}
     </div>
   );
 });

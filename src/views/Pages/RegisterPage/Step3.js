@@ -13,10 +13,9 @@ const Step3 = React.forwardRef((props, ref) => {
   const [identityType, setIdentityType] = useState("ENTERPRISE");
   const [isFinancialOrg, setIsFinancialOrg] = useState(false);
   const [financialOrgType, setFinancialOrgType] = useState("");
-  const [financialOrgCertImg, setFinancialOrgCertImg] = useState([]);
-  const [financialOrgCertImagesName, setFinancialOrgCertImagesName] = useState(
-    []
-  );
+  const [financialOrgCertImg, setFinancialOrgCertImg] = useState(null);
+  const [financialOrgCertImagesName, setFinancialOrgCertImagesName] =
+    useState(null);
   const [certificateType, setCertificateType] = useState("");
   const [certType, setCertType] = useState("");
   const [certNo, setCertNo] = useState("");
@@ -25,17 +24,17 @@ const Step3 = React.forwardRef((props, ref) => {
   const [registerAddress, setRegisterAddress] = useState("");
   const [effectTime, setEffectTime] = useState("");
   const [expireTime, setExpireTime] = useState("");
-  const [requiredEmployerLetter, setRequiredEmployerLetter] = useState([]);
+  const [requiredEmployerLetter, setRequiredEmployerLetter] = useState(null);
   const [merchantType, setMerchantType] = useState("");
   const [storeName, setStoreName] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [storeAddress, setStoreAddress] = useState("");
-  const [storeDoorImg, setStoreDoorImg] = useState([]);
-  const [storeInnerImg, setStoreInnerImg] = useState([]);
+  const [storeDoorImg, setStoreDoorImg] = useState(null);
+  const [storeInnerImg, setStoreInnerImg] = useState(null);
   const [errors, setErrors] = useState({});
-  const [certImageName, setCertImageName] = useState([]);
+  const [certImageName, setCertImageName] = useState(null);
 
   const identityOptions = [
     { value: "ENTERPRISE", label: "企业" },
@@ -92,7 +91,7 @@ const Step3 = React.forwardRef((props, ref) => {
       console.log(filenames);
       setFinancialOrgCertImagesName(filenames);
     } else {
-      setFinancialOrgCertImagesName([]);
+      setFinancialOrgCertImagesName(null);
     }
   };
 
@@ -103,7 +102,7 @@ const Step3 = React.forwardRef((props, ref) => {
       console.log(filenames);
       setCertImageName(filenames);
     } else {
-      setCertImageName([]);
+      setCertImageName(null);
     }
     handleInputSave();
   };
@@ -168,7 +167,7 @@ const Step3 = React.forwardRef((props, ref) => {
       console.log(filenames);
       setCertImage(filenames);
     } else {
-      setCertImage([]);
+      setCertImage(null);
     }
     handleInputSave();
   };
