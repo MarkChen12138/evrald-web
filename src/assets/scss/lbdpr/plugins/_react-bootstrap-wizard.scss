@@ -1,20 +1,20 @@
-.card-wizard{
-  min-height: 410px;
+.card-wizard {
+  min-height: 400px;
   // box-shadow: $box-shadow;
   @include transition($general-transition-time, $transition-linear);
-  &[data-color="primary"]{
+  &[data-color="primary"] {
     @include set-wizard-color($primary-color);
   }
-  &[data-color="green"]{
+  &[data-color="green"] {
     @include set-wizard-color($success-color);
   }
-  &[data-color="orange"]{
+  &[data-color="orange"] {
     @include set-wizard-color($warning-color);
   }
-  &[data-color="red"]{
+  &[data-color="red"] {
     @include set-wizard-color($danger-color);
   }
-  &[data-color="blue"]{
+  &[data-color="blue"] {
     @include set-wizard-color($info-color);
   }
 
@@ -22,9 +22,9 @@
     padding: 15px 0 !important;
     padding-bottom: 40px;
     background-color: transparent;
-    .card-title{
+    .card-title {
       margin-bottom: 0px;
-      & + .description{
+      & + .description {
         color: $dark-gray;
         font-size: 0.875rem;
         font-weight: 400;
@@ -34,8 +34,8 @@
     }
   }
 
-  .nav-pills .nav-item .nav-link{
-    padding: .75rem;
+  .nav-pills .nav-item .nav-link {
+    padding: 0.75rem;
   }
 
   .nav-pills .nav-item .nav-link,
@@ -43,21 +43,21 @@
   .nav-pills .nav-item .nav-link:hover,
   .nav-pills .nav-item .nav-link:focus,
   .nav-pills .nav-item .nav-link.active:focus,
-  .nav-pills .nav-item .nav-link.active:hover{
+  .nav-pills .nav-item .nav-link.active:hover {
     background-color: transparent;
     box-shadow: none;
   }
 
-  .picture-container{
+  .picture-container {
     position: relative;
     cursor: pointer;
     text-align: center;
   }
 
-  .wizard-navigation{
+  .wizard-navigation {
     position: relative;
 
-    .nav-link{
+    .nav-link {
       display: flex;
       align-items: center;
       -ms-flex-pack: center;
@@ -66,7 +66,7 @@
   }
 
   .wizard-navigation .nav-link i,
-  .moving-tab i{
+  .moving-tab i {
     display: inline-block;
     font-size: 19px;
     line-height: 18px;
@@ -74,31 +74,31 @@
     padding: 0;
     vertical-align: bottom;
   }
-  .moving-tab i{
+  .moving-tab i {
     margin-right: 9px;
   }
 
-  .picture{
+  .picture {
     width: 106px;
     height: 106px;
     background-color: #999999;
     border: 1px solid $light-gray;
-    color: #FFFFFF;
+    color: #ffffff;
     border-radius: 50%;
     margin: 5px auto;
     overflow: hidden;
     transition: all 0.2s;
     -webkit-transition: all 0.2s;
 
-    &:hover{
+    &:hover {
       border-color: #2ca8ff;
     }
   }
 
-  .moving-tab{
+  .moving-tab {
     position: absolute;
     text-align: center;
-    padding: .75rem;
+    padding: 0.75rem;
     font-size: 1rem;
     text-transform: uppercase;
     -webkit-font-smoothing: subpixel-antialiased;
@@ -123,62 +123,62 @@
     width: 100%;
   }
 
-  .picture-src{
+  .picture-src {
     width: 100%;
   }
 
-  .tab-content{
+  .tab-content {
     min-height: 355px;
     padding: 20px 0;
   }
 
-  .wizard-footer{
+  .wizard-footer {
     padding: 0 15px;
 
-    .checkbox{
+    .checkbox {
       margin-top: 16px;
     }
   }
 
-  .disabled{
+  .disabled {
     display: none;
   }
 
-  .wizard-header{
+  .wizard-header {
     text-align: center;
     padding: 25px 0 35px;
 
-    h5{
+    h5 {
       margin: 5px 0 0;
     }
   }
 
-  .nav-pills > li{
+  .nav-pills > li {
     text-align: center;
   }
 
-  .btn{
+  .btn {
     text-transform: uppercase;
   }
 
-  .info-text{
+  .info-text {
     text-align: center;
     font-weight: 300;
     margin: 10px 0 30px;
   }
 
-  .choice{
+  .choice {
     text-align: center;
     cursor: pointer;
     margin-top: 20px;
 
-    &[disabled]{
+    &[disabled] {
       pointer-events: none;
       cursor: not-allowed;
-      opacity: .5;
+      opacity: 0.5;
     }
 
-    .icon{
+    .icon {
       text-align: center;
       vertical-align: middle;
       height: 116px;
@@ -191,7 +191,7 @@
       -webkit-transition: all 0.2s;
     }
 
-    i{
+    i {
       font-size: 30px;
       line-height: 116px;
       position: absolute;
@@ -200,34 +200,34 @@
     }
 
     &:hover,
-    &.active{
-      .icon{
+    &.active {
+      .icon {
         border-color: #2ca8ff;
       }
     }
 
     input[type="radio"],
-    input[type="checkbox"]{
+    input[type="checkbox"] {
       position: absolute;
       left: -10000px;
       z-index: -1;
     }
   }
 
-  .btn-finish{
+  .btn-finish {
     display: none;
   }
 
-  .card-title + .description{
+  .card-title + .description {
     font-size: $font-size-base + 3;
     margin-bottom: 32px;
   }
 
-  .wizard-title{
+  .wizard-title {
     margin: 0;
   }
 
-  .nav-pills{
+  .nav-pills {
     background-color: $dark-gray;
 
     > li + li {
@@ -236,7 +236,7 @@
 
     > li > a {
       border: 0 !important;
-      border-radius: 0 ;
+      border-radius: 0;
       line-height: 18px;
       text-transform: uppercase;
       font-size: 1rem;
@@ -250,12 +250,12 @@
     > li.active > a:hover,
     > li.active > a:focus,
     > li > a:hover,
-    > li > a:focus{
+    > li > a:focus {
       background-color: inherit;
       box-shadow: none;
     }
 
-    > li i{
+    > li i {
       display: block;
       font-size: 30px;
       padding: 15px 0;

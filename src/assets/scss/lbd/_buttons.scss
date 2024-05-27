@@ -1,3 +1,4 @@
+// 基础按钮样式
 .btn {
   border-width: $border-thick;
   background-color: $transparent-bg;
@@ -25,8 +26,49 @@
   }
 }
 
-// Apply the mixin to the buttons
-// .btn-default { @include btn-styles($default-color, $default-states-color); }
+// 动态按钮样式
+.button {
+  @include btn-size(
+    $padding-large-vertical,
+    $padding-large-horizontal,
+    $font-size-large,
+    $border-radius-large
+  );
+  background-color: $primary-color;
+  border: none;
+  color: #ffffff;
+  text-align: center;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+
+  span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+  }
+
+  span:after {
+    content: "\00bb";
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+  }
+
+  &:hover span {
+    padding-right: 25px;
+  }
+
+  &:hover span:after {
+    opacity: 1;
+    right: 0;
+  }
+}
+
+// 应用此动态按钮样式到 .btn-primary
 .btn-primary {
   @include btn-styles($primary-color, $primary-states-color);
 }
