@@ -28,6 +28,9 @@ import Step5 from "./Step5.js";
 function RegisterPage() {
   const [isvalidated, setIsValidated] = React.useState(false);
   const [step3Files, setStep3Files] = React.useState(null);
+  const [step4Files, setStep4Files] = React.useState(null);
+  const [step5Files, setStep5Files] = React.useState(null);
+  const API_URL = "https://api.example.com/authorder-create"; // Replace with your actual URL
   // const [step1Data, setStep1Data] = React.useState({
   //   email: "",
   //   invitationCode: "",
@@ -104,6 +107,7 @@ function RegisterPage() {
       component: Step4,
       stepProps: {
         updateStep4Data,
+        setStep4Files,
         identityType: step3Data.auth_identity_info.identity_type,
       },
     },
@@ -112,6 +116,7 @@ function RegisterPage() {
       component: Step5,
       stepProps: {
         updateStep5Data,
+        setStep5Files,
         isBenefitPersonInfoRequired:
           step3Data.auth_identity_info.identity_type === "ENTERPRISE" &&
           !step4Data.legal_person_info.is_benefit_person,
@@ -128,6 +133,122 @@ function RegisterPage() {
       setCardClasses("");
     }, 1000);
   });
+
+  function handleSubmit() {
+    // Here you would gather your formData, typically it could be structured based on your form states
+    const formData = {
+      out_biz_no: "your_business_code", // This would be generated or predefined
+      contact_person_info: step2Data.contact_person_info,
+      auth_identity_info: step3Data.auth_identity_info,
+      legal_person_info: step4Data.legal_person_info,
+    };
+
+    // Conditionally add benefit_person_info based on specific conditions
+    if (
+      step3Data.auth_identity_info.identity_type === "ENTERPRISE" &&
+      !step4Data.legal_person_info.is_benefit_person
+    ) {
+      formData.benefit_person_info = step5Data; // Assuming step5Data contains all required fields
+    }
+
+    console.log(formData);
+
+    fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Check the response from your API
+        if (
+          data.alipay_merchant_indirect_authorder_create_response.code ===
+          "10000"
+        ) {
+          setAlertState(
+            <SweetAlert
+              success
+              style={{ display: "block", marginTop: "-100px" }}
+              title="Registration Successful!"
+              onConfirm={() => setAlertState(null)}
+              confirmBtnBsStyle="info"
+            >
+              Your registration has been successfully processed.
+            </SweetAlert>
+          );
+        } else {
+          setAlertState(
+            <SweetAlert
+              error
+              style={{ display: "block", marginTop: "-100px" }}
+              title="Registration Failed!"
+              onConfirm={() => setAlertState(null)}
+              confirmBtnBsStyle="info"
+            >
+              There was a problem with your registration.
+            </SweetAlert>
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setAlertState(
+          <SweetAlert
+            error
+            style={{ display: "block", marginTop: "-100px" }}
+            title="Network Error"
+            onConfirm={() => setAlertState(null)}
+            confirmBtnBsStyle="info"
+          >
+            Network error, please try again later.
+          </SweetAlert>
+        );
+      });
+  }
+
+  function handleImageUpload() {
+    const formData = new FormData();
+
+    // 添加第三步的文件
+    if (step3Files) {
+      Array.from(step3Files).forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+
+    // 添加第四步的文件
+    if (step4Files) {
+      Array.from(step4Files).forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+
+    // 添加第五步的文件
+    if (step5Files) {
+      Array.from(step5Files).forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    fetch(API_URL, {
+      method: "POST",
+      body: formData, // 不设置 'Content-Type'，让浏览器自己设置
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        // 处理响应数据
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
   return (
     <>
@@ -154,23 +275,7 @@ function RegisterPage() {
                   nextButtonClasses="btn-info btn-wd"
                   previousButtonClasses="btn-wd"
                   finishButtonClick={() => {
-                    if (isvalidated) {
-                      setAlertState(
-                        <SweetAlert
-                          success
-                          style={{
-                            display: "block",
-                            marginTop: "-100px",
-                          }}
-                          title="Good job!"
-                          onConfirm={() => setAlertState(null)}
-                          onCancel={() => setAlertState(null)}
-                          confirmBtnBsStyle="info"
-                        >
-                          You clicked the finish button!
-                        </SweetAlert>
-                      );
-                    }
+                    handleSubmit(), handleImageUpload();
                   }}
                 />
               </Col>

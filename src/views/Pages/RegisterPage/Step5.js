@@ -11,6 +11,7 @@ import {
   FormLabel,
   Button,
 } from "react-bootstrap";
+import { parseZone } from "moment";
 
 const cardTypes = [
   { value: "RESIDENT", label: "居民身份证" },
@@ -25,66 +26,29 @@ const cardTypes = [
 const Step5 = React.forwardRef((props, ref) => {
   const [cardType, setCardType] = React.useState("RESIDENT");
   const [benefitName, setBenefitName] = React.useState("");
-  const [benefitNameError, setBenefitNameError] = React.useState(null);
   const [benefitPhoneNumber, setBenefitPhoneNumber] = React.useState("");
-  const [benefitPhoneNumberError, setBenefitPhoneNumberError] =
-    React.useState(null);
+  React.useState(null);
   const [benefitCardNumber, setBenefitCardNumber] = React.useState("");
-  const [benefitCardNumberError, setBenefitCardNumberError] =
-    React.useState(null);
   const [cardFontImg, setCardFontImg] = React.useState(null);
   const [cardBackImg, setCardBackImg] = React.useState(null);
   const [effectTime, setEffectTime] = React.useState("");
   const [expireTime, setExpireTime] = React.useState("");
   const [errors, setErrors] = React.useState({});
 
-  // 验证姓名
-  const validateName = () => {
-    if (benefitName.trim() === "") {
-      setBenefitNameError("受益人姓名不能为空");
-      return false;
-    } else {
-      setBenefitNameError(null);
-      return true;
-    }
-  };
-
-  // 验证电话号码
-  const validatePhoneNumber = () => {
-    const phoneRegex = /^[1-9]\d{9}$/; // 仅示例，根据实际需求调整
-    if (!phoneRegex.test(benefitPhoneNumber.trim())) {
-      setBenefitPhoneNumberError("电话号码格式不正确");
-      return false;
-    } else {
-      setBenefitPhoneNumberError(null);
-      return true;
-    }
-  };
-
-  // 验证证件号码
-  const validateCardNumber = () => {
-    if (benefitCardNumber.trim() === "") {
-      setBenefitCardNumberError("证件号码不能为空");
-      return false;
-    } else {
-      setBenefitCardNumberError(null);
-      return true;
-    }
-  };
-
   const validateForm = () => {
     let newErrors = {};
+    const phoneRegex = /^[1-9]\d{9}$/;
     if (!benefitName.trim()) {
       newErrors.benefitName = "受益人名字不能为空";
     }
 
     if (!benefitPhoneNumber.trim()) {
       newErrors.benefitPhoneNumber = "受益人电话不能为空";
-    } else if (!validatePhoneNumber()) {
+    } else if (!phoneRegex.test(benefitPhoneNumber.trim())) {
       newErrors.benefitPhoneNumber = "电话号码格式不正确";
     }
 
-    if (!beCardNumber.trim()) {
+    if (!benefitCardNumber.trim()) {
       newErrors.benefitCardNumber = "证件号码不能为空";
     }
     if (!cardType) {
@@ -109,8 +73,8 @@ const Step5 = React.forwardRef((props, ref) => {
   };
 
   const handleInputSave = () => {
-    console.log(errors.benefitCardNumber);
     if (validateForm()) {
+      const formFiles = new FormData();
       const Step5Data = {
         benefit_person_info: {
           person_name: benefitName,
@@ -202,9 +166,9 @@ const Step5 = React.forwardRef((props, ref) => {
                   onChange={(e) => setBenefitCardNumber(e.target.value)}
                   onBlur={handleInputSave}
                 />
-                {benefitCardNumberError && (
+                {errors.benefitCardNumber && (
                   <small className="text-danger">
-                    {benefitCardNumberError}
+                    {errors.benefitCardNumber}
                   </small>
                 )}
               </FormGroup>

@@ -84,6 +84,8 @@ const Step3 = React.forwardRef((props, ref) => {
 
   const handleInputSave = () => {
     if (validateForm()) {
+      const formFiles = new FormData();
+
       const authIdentityInfo = {
         identity_type: identityType,
         is_financial_org: isFinancialOrg,
@@ -95,7 +97,17 @@ const Step3 = React.forwardRef((props, ref) => {
             (file) => file.name
           ),
         };
+        console.log("financialOrgCertImg", financialOrgCertImg);
+        Array.from(financialOrgCertImg).forEach((file, index) =>
+          formFiles.append(`financial_org_cert_img_${index + 1}`, file)
+        );
+
+        // 使用 FormData.entries() 检查 FormData 内容
+        for (let [key, value] of formFiles.entries()) {
+          console.log(`${key}:`, value);
+        }
       }
+
       authIdentityInfo.certificate_type = certificateType;
       if (
         certType !== "" &&
@@ -117,9 +129,11 @@ const Step3 = React.forwardRef((props, ref) => {
           effect_time: effectTime,
           expire_time: expireTime,
         };
+        formFiles.append("certImg", certImg[0]);
       }
       if (employerLetterImg) {
         authIdentityInfo.employer_letter_img = employerLetterImg[0].name;
+        formFiles.append("employerLetterImg", employerLetterImg[0]);
       }
       if (identityType === "MSE") {
         authIdentityInfo.merchant_info = {
@@ -132,26 +146,14 @@ const Step3 = React.forwardRef((props, ref) => {
           store_door_img: storeDoorImg[0].name,
           store_inner_img: storeInnerImg[0].name,
         };
+        formFiles.append("storeDoorImg", storeDoorImg[0]);
+        formFiles.append("storeInnerImg", storeInnerImg[0]);
       }
       props.updateStep3Data(authIdentityInfo);
-      console.log("authIdentityInfo", authIdentityInfo);
-      props.setStep3Files({});
+      console.log("formFiles", formFiles);
+      props.setStep3Files(formFiles);
     }
-
-    console.log("employerLetterImg", employerLetterImg);
   };
-
-  // const setCertImg = () => {
-  //   const files = event.target.files;
-  //   if (files) {
-  //     const filenames = Array.from(files).map((file) => file.name);
-  //     console.log(filenames);
-  //     setCertImg(filenames);
-  //   } else {
-  //     setCertImg(null);
-  //   }
-  //   handleInputSave();
-  // };
 
   React.useImperativeHandle(ref, () => ({
     isValidated: validateForm,

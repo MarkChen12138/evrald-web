@@ -47,8 +47,16 @@ const Step4 = React.forwardRef((props, ref) => {
   ];
 
   const handleInputSave = () => {
-    console.log(cardFontImg);
     if (validateForm()) {
+      const formFiles = new FormData();
+      formFiles.append("cardFontImg", cardFontImg[0]);
+      if (cardType === "RESIDENT") {
+        formFiles.append("cardBackImg", cardBackImg[0]);
+      }
+      if (legalType === "AGENT_PERSON") {
+        formFiles.append("authLetterImg", authLetterImg[0]);
+      }
+
       const Step4Data = {
         card_type: cardType,
         person_name: legalName,
@@ -68,7 +76,7 @@ const Step4 = React.forwardRef((props, ref) => {
       }
       Step4Data.is_benefit_person = isBenefitPerson;
       props.updateStep4Data(Step4Data);
-      console.log(Step4Data);
+      props.setStep4Files(formFiles);
     }
   };
 
