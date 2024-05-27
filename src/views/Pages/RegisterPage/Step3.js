@@ -22,17 +22,17 @@ const Step3 = React.forwardRef((props, ref) => {
   const [registerAddress, setRegisterAddress] = useState("");
   const [effectTime, setEffectTime] = useState("");
   const [expireTime, setExpireTime] = useState("");
-  const [employerLetterImg, setEmployerLetter] = useState([]);
+  const [employerLetterImg, setEmployerLetter] = useState(null);
   const [merchantType, setMerchantType] = useState("");
   const [storeName, setStoreName] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
   const [district, setDistrict] = useState("");
   const [storeAddress, setStoreAddress] = useState("");
-  const [storeDoorImg, setStoreDoorImg] = useState([]);
-  const [storeInnerImg, setStoreInnerImg] = useState([]);
+  const [storeDoorImg, setStoreDoorImg] = useState(null);
+  const [storeInnerImg, setStoreInnerImg] = useState(null);
   const [errors, setErrors] = useState({});
-  const [certImg, setCertImg] = useState([]);
+  const [certImg, setCertImg] = useState(null);
 
   const identityOptions = [
     { value: "ENTERPRISE", label: "企业" },
@@ -82,29 +82,6 @@ const Step3 = React.forwardRef((props, ref) => {
 
   const requiredEmployerLetterTypes = ["GOV", "INST"];
 
-  // const handleFinancialOrgCertImgsNameChange = (event) => {
-  //   const files = event.target.files;
-  //   if (files) {
-  //     const filenames = Array.from(files).map((file) => file.name);
-  //     console.log(filenames);
-  //     setFinancialOrgCertImgsName(filenames);
-  //   } else {
-  //     setFinancialOrgCertImgsName(null);
-  //   }
-  // };
-
-  // const handleCertImgChange = (event) => {
-  //   const files = event.target.files;
-  //   if (files) {
-  //     const filenames = Array.from(files).map((file) => file.name);
-  //     console.log(filenames);
-  //     setCertImgName(filenames);
-  //   } else {
-  //     setCertImgName(null);
-  //   }
-  //   handleInputSave();
-  // };
-
   const handleInputSave = () => {
     if (validateForm()) {
       const authIdentityInfo = {
@@ -123,7 +100,7 @@ const Step3 = React.forwardRef((props, ref) => {
       if (
         certType !== "" &&
         certNo !== "" &&
-        certImg !== null &&
+        certImg !== "" &&
         merchantName !== "" &&
         legalPersonName !== "" &&
         registerAddress !== "" &&
@@ -141,7 +118,7 @@ const Step3 = React.forwardRef((props, ref) => {
           expire_time: expireTime,
         };
       }
-      if (employerLetterImg.length !== 0) {
+      if (employerLetterImg) {
         authIdentityInfo.employer_letter_img = employerLetterImg[0].name;
       }
       if (identityType === "MSE") {
@@ -152,13 +129,15 @@ const Step3 = React.forwardRef((props, ref) => {
           city: city,
           district: district,
           store_address: storeAddress,
-          store_door_img: storeDoorImg,
-          store_inner_img: storeInnerImg,
+          store_door_img: storeDoorImg[0].name,
+          store_inner_img: storeInnerImg[0].name,
         };
       }
       props.updateStep3Data(authIdentityInfo);
+      console.log("authIdentityInfo", authIdentityInfo);
       props.setStep3Files({});
     }
+
     console.log("employerLetterImg", employerLetterImg);
   };
 
@@ -186,6 +165,7 @@ const Step3 = React.forwardRef((props, ref) => {
     if (!legalPersonName.trim()) newErrors.legalPersonName = "法人姓名不能为空";
     if (!registerAddress.trim()) newErrors.registerAddress = "注册地址不能为空";
     if (!certNo.trim()) newErrors.certNo = "证件编号不能为空";
+    if (!certImg) newErrors.certImg = "请上传证照图片";
     if (isFinancialOrg) {
       if (!financialOrgType.trim()) {
         newErrors.financialOrgType = "请选择金融机构类型";
@@ -210,7 +190,7 @@ const Step3 = React.forwardRef((props, ref) => {
       }
     }
     if (requiredEmployerLetterTypes.includes(identityType)) {
-      if (employerLetterImg.length === 0)
+      if (!employerLetterImg)
         newErrors.employerLetterImg = "请上传单位证明函照片";
     }
     if (identityType === "MSE") {
@@ -218,9 +198,9 @@ const Step3 = React.forwardRef((props, ref) => {
       if (!province.trim()) newErrors.province = "门店省份不能为空";
       if (!district.trim()) newErrors.district = "门店街道不能为空";
       if (!storeAddress.trim()) newErrors.storeAddress = "门店详细地址不能为空";
-      if (storeDoorImg.length === 0)
+      if (!storeDoorImg)
         newErrors.storeDoorImg = "请上传门店门头照信息或摊位照";
-      if (storeInnerImg.length === 0)
+      if (!storeInnerImg)
         newErrors.storeInnerImg = "请上传门店店内照片或者摊位照侧面";
     }
 
@@ -444,7 +424,6 @@ const Step3 = React.forwardRef((props, ref) => {
                   <small className="text-danger">{errors.effectTime}</small>
                 )}
               </FormGroup>
-
               <FormGroup>
                 <FormLabel>
                   证照过期时间 <span className="text-danger">*</span>
@@ -579,13 +558,9 @@ const Step3 = React.forwardRef((props, ref) => {
                 </FormLabel>
                 <FormControl
                   type="file"
-                  multiple
+                  accept="image/*"
                   placeholder="请输入图片"
-                  onChange={(e) =>
-                    setStoreDoorImg(
-                      Array.from(e.target.files).map((file) => file.name)
-                    )
-                  }
+                  onChange={(e) => setStoreDoorImg(e.target.files)}
                   onBlur={handleInputSave}
                 />
                 {errors.storeDoorImg && (
@@ -599,13 +574,9 @@ const Step3 = React.forwardRef((props, ref) => {
                 </FormLabel>
                 <FormControl
                   type="file"
-                  multiple
+                  accept="image/*"
                   placeholder="请输入图片"
-                  onChange={(e) =>
-                    setStoreInnerImg(
-                      Array.from(e.target.files).map((file) => file.name)
-                    )
-                  }
+                  onChange={(e) => setStoreInnerImg(e.target.files)}
                   onBlur={handleInputSave}
                 />
                 {errors.storeInnerImg && (

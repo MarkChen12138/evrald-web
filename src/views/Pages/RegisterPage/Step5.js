@@ -110,20 +110,23 @@ const Step5 = React.forwardRef((props, ref) => {
 
   const handleInputSave = () => {
     console.log(errors.benefitCardNumber);
-    const Step5Data = {
-      benefit_person_info: {
-        person_name: benefitName,
-        card_no: benefitCardNumber,
-        card_type: cardType,
-        effect_time: effectTime,
-        expire_time: expireTime,
-        card_font_img: cardFontImg,
-      },
-    };
-    if (cardType === "RESIDENT") {
-      Step5Data.benefit_person_info.card_back_img = cardBackImg;
+    if (validateForm()) {
+      const Step5Data = {
+        benefit_person_info: {
+          person_name: benefitName,
+          card_no: benefitCardNumber,
+          card_type: cardType,
+          effect_time: effectTime,
+          expire_time: expireTime,
+          card_font_img: cardFontImg[0].name,
+        },
+      };
+      if (cardType === "RESIDENT") {
+        Step5Data.benefit_person_info.card_back_img = cardBackImg[0].name;
+      }
+      props.updateStep5Data(Step5Data);
+      console.log(Step5Data);
     }
-    props.updateStep5Data(Step5Data);
   };
 
   React.useImperativeHandle(ref, () => ({
@@ -239,13 +242,8 @@ const Step5 = React.forwardRef((props, ref) => {
                 </FormLabel>
                 <FormControl
                   type="file"
-                  multiple
                   placeholder="请输入图片"
-                  onChange={(e) =>
-                    setCardFontImg(
-                      Array.from(e.target.files).map((file) => file.name)
-                    )
-                  }
+                  onChange={(e) => setCardFontImg(e.target.files)}
                   onBlur={handleInputSave}
                 />
                 {errors.cardFontImg && (
@@ -260,13 +258,8 @@ const Step5 = React.forwardRef((props, ref) => {
                   </FormLabel>
                   <FormControl
                     type="file"
-                    multiple
                     placeholder="请输入图片"
-                    onChange={(e) =>
-                      setCardBackImg(
-                        Array.from(e.target.files).map((file) => file.name)
-                      )
-                    }
+                    onChange={(e) => setCardBackImg(e.target.files)}
                     onBlur={handleInputSave}
                   />
                   {errors.cardBackImg && (

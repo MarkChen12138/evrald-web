@@ -15,12 +15,8 @@ import {
 const Step4 = React.forwardRef((props, ref) => {
   const [cardType, setCardType] = React.useState("RESIDENT");
   const [legalName, setLegalName] = React.useState("");
-  const [legalNameError, setLegalNameError] = React.useState(null);
   const [legalPhoneNumber, setLegalPhoneNumber] = React.useState("");
-  const [legalPhoneNumberError, setLegalPhoneNumberError] =
-    React.useState(null);
   const [legalCardNumber, setLegalCardNumber] = React.useState("");
-  const [legalCardNumberError, setLegalCardNumberError] = React.useState(null);
   const [effectTime, setEffectTime] = React.useState("");
   const [expireTime, setExpireTime] = React.useState("");
   const [cardFontImg, setCardFontImg] = React.useState(null);
@@ -51,6 +47,7 @@ const Step4 = React.forwardRef((props, ref) => {
   ];
 
   const handleInputSave = () => {
+    console.log(cardFontImg);
     if (validateForm()) {
       const Step4Data = {
         card_type: cardType,
@@ -58,54 +55,33 @@ const Step4 = React.forwardRef((props, ref) => {
         card_no: legalCardNumber,
         effect_time: effectTime,
         expire_time: expireTime,
-        card_font_img: cardFontImg,
+        card_font_img: cardFontImg[0].name,
       };
       if (props.identityType === "GOV" || props.identityType === "INST") {
         Step4Data.legal_type = legalType;
       }
       if (cardType === "RESIDENT") {
-        Step4Data.card_back_img = cardBackImg;
+        Step4Data.card_back_img = cardBackImg[0].name;
       }
       if (legalType === "AGENT_PERSON") {
         Step4Data.auth_letter_img = authLetterImg;
       }
       Step4Data.is_benefit_person = isBenefitPerson;
       props.updateStep4Data(Step4Data);
-    }
-  };
-
-  // 验证姓名
-  const validateName = () => {
-    if (legalName.trim() === "") {
-      setLegalNameError("法人姓名不能为空");
-      return false;
-    } else {
-      setLegalNameError(null);
-      return true;
-    }
-  };
-
-  // 验证电话号码
-  const validatePhoneNumber = () => {
-    const phoneRegex = /^[1-9]\d{9}$/; // 仅示例，根据实际需求调整
-    if (!phoneRegex.test(legalPhoneNumber.trim())) {
-      setLegalPhoneNumberError("电话号码格式不正确");
-      return false;
-    } else {
-      setLegalPhoneNumberError(null);
-      return true;
+      console.log(Step4Data);
     }
   };
 
   const validateForm = () => {
     let newErrors = {};
+    const phoneRegex = /^[1-9]\d{9}$/;
     if (!legalName.trim()) {
       newErrors.legalName = "法人名字不能为空";
     }
 
     if (!legalPhoneNumber.trim()) {
       newErrors.legalPhoneNumber = "法人电话不能为空";
-    } else if (!validatePhoneNumber()) {
+    } else if (!phoneRegex.test(legalPhoneNumber.trim())) {
       newErrors.legalPhoneNumber = "电话号码格式不正确";
     }
 
@@ -143,8 +119,6 @@ const Step4 = React.forwardRef((props, ref) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // 综合验证所有字段
-
   React.useImperativeHandle(ref, () => ({
     isValidated: validateForm,
     handleInputSave: handleInputSave,
@@ -180,7 +154,7 @@ const Step4 = React.forwardRef((props, ref) => {
               placeholder="请输入您的姓名"
               value={legalName}
               onChange={(e) => setLegalName(e.target.value)}
-              onBlur={validateName}
+              onBlur={validateForm}
             />
             {errors.legalName && (
               <small className="text-danger">{errors.legalName}</small>
@@ -196,7 +170,7 @@ const Step4 = React.forwardRef((props, ref) => {
               placeholder="请输入您的电话号码"
               value={legalPhoneNumber}
               onChange={(e) => setLegalPhoneNumber(e.target.value)}
-              onBlur={validatePhoneNumber}
+              onBlur={validateForm}
             />
             {errors.legalPhoneNumber && (
               <small className="text-danger">{errors.legalPhoneNumber}</small>
@@ -246,13 +220,8 @@ const Step4 = React.forwardRef((props, ref) => {
             <FormLabel>法人/经营者证件正面照</FormLabel>
             <FormControl
               type="file"
-              multiple
               placeholder="请输入图片"
-              onChange={(e) =>
-                setCardFontImg(
-                  Array.from(e.target.files).map((file) => file.name)
-                )
-              }
+              onChange={(e) => setCardFontImg(e.target.files)}
               onBlur={handleInputSave}
             />
             {errors.cardFontImg && (
@@ -285,13 +254,8 @@ const Step4 = React.forwardRef((props, ref) => {
               <FormLabel>法人/经营者证件反面照</FormLabel>
               <FormControl
                 type="file"
-                multiple
                 placeholder="请输入图片"
-                onChange={(e) =>
-                  setCardBackImg(
-                    Array.from(e.target.files).map((file) => file.name)
-                  )
-                }
+                onChange={(e) => setCardBackImg(e.target.files)}
                 onBlur={handleInputSave}
               />
               {errors.cardBackImg && (
@@ -304,13 +268,8 @@ const Step4 = React.forwardRef((props, ref) => {
               <FormLabel>授权函照片</FormLabel>
               <FormControl
                 type="file"
-                multiple
                 placeholder="请输入图片"
-                onChange={(e) =>
-                  setAuthLetterImg(
-                    Array.from(e.target.files).map((file) => file.name)
-                  )
-                }
+                onChange={(e) => setAuthLetterImg(e.target.files)}
                 onBlur={handleInputSave}
               />
               {errors.authLetterImg && (
