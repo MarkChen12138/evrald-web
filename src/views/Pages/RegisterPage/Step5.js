@@ -75,6 +75,11 @@ const Step5 = React.forwardRef((props, ref) => {
   const handleInputSave = () => {
     if (validateForm()) {
       const formFiles = new FormData();
+      formFiles.append("cardFontImg", cardFontImg[0]);
+      if (cardType === "RESIDENT") {
+        formFiles.append("cardBackImg", cardBackImg[0]);
+      }
+
       const Step5Data = {
         benefit_person_info: {
           person_name: benefitName,
@@ -89,7 +94,7 @@ const Step5 = React.forwardRef((props, ref) => {
         Step5Data.benefit_person_info.card_back_img = cardBackImg[0].name;
       }
       props.updateStep5Data(Step5Data);
-      console.log(Step5Data);
+      props.setStep5Files(formFiles);
     }
   };
 

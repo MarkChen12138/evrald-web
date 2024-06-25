@@ -1,74 +1,39 @@
 import React from "react";
-
-// react-bootstrap components
-import {
-  Badge,
-  Button,
-  Card,
-  Form,
-  InputGroup,
-  Navbar,
-  Nav,
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
+import { Card, Container, Row, Col } from "react-bootstrap";
+import { useHistory } from "react-router-dom"; // 导入 useHistory 钩子
+import { companies, productSpecs } from "./CompaniesForDisplay";
 
 function Database() {
+  const history = useHistory(); // 使用 useHistory 钩子获取 history 实例
+
+  const handleCardClick = (id) => {
+    console.log(id);
+    history.push(`/admin/company/${id}`); // 使用传入的公司 id 导航到公司详情页
+  };
+
   return (
-    <>
-      <Container fluid>
-        <Card.Title as="h4">
-          SM Grid <small>Collapsed at 576px</small>
-        </Card.Title>
-        <Row>
-          <Col sm="4">
-            <Card>
+    <Container fluid>
+      <Row>
+        {companies.map((company) => (
+          <Col sm="4" key={company.CompanyID}>
+            <Card onClick={() => handleCardClick(company.CompanyID)}>
               <Card.Img src={require("assets/img/blog-1.jpg")}></Card.Img>
               <Card.Body className="text-center">
-                <code>{`<Col sm={4}>...</Col>`}</code>
+                <code>{company.CompanyName}</code>
+                <div>
+                  {company.Products.map((id, index) => (
+                    <h6 key={index}>
+                      {productSpecs.find((p) => p.ProductSpecID === id)
+                        ?.ProductName || "Product not found"}
+                    </h6>
+                  ))}
+                </div>
               </Card.Body>
             </Card>
           </Col>
-          <Col sm="4">
-            <Card>
-              <Card.Body className="text-center">
-                <code>{`<Col sm={4}>...</Col>`}</code>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col sm="4">
-            <Card>
-              <Card.Body className="text-center">
-                <code>{`<Col sm={4}>...</Col>`}</code>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </>
-  );
-}
-
-function GridExample() {
-  return (
-    <Row xs={1} md={2} className="g-4">
-      {Array.from({ length: 4 }).map((_, idx) => (
-        <Col key={idx}>
-          <Card>
-            <Card.Img variant="top" src="holder.js/100px160" />
-            <Card.Body>
-              <Card.Title>Card title</Card.Title>
-              <Card.Text>
-                This is a longer card with supporting text below as a natural
-                lead-in to additional content. This content is a little bit
-                longer.
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-      ))}
-    </Row>
+        ))}
+      </Row>
+    </Container>
   );
 }
 

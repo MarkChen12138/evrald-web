@@ -40,14 +40,31 @@ import RegisterPage from "views/Pages/RegisterPage/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 import Database from "views/Database/Database";
 import UserProduct from "views/User/UserProduct";
+import CompanyDetail from "views/Database/CompanyDetail";
+import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 
 var routes = [
   {
+    collapse: true,
     path: "/database",
-    layout: "/admin",
-    name: "Chain Database",
+    name: "Database",
+    state: "openComponents",
     icon: "nc-icon nc-alien-33",
-    component: Database,
+    views: [
+      {
+        path: "/chain-database",
+        layout: "/admin",
+        name: "Chain Database",
+        mini: "B",
+        component: Database,
+      },
+      {
+        path: "/company/:id",
+        layout: "/admin",
+        name: "ComapanyDetail",
+        component: CompanyDetail,
+      },
+    ],
   },
   {
     path: "/user-product",
