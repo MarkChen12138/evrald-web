@@ -1,7 +1,15 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Card, Container, Row, Col, Button, ListGroup } from "react-bootstrap";
-import { companies } from "./CompaniesForDisplay";
+import {
+  Card,
+  Container,
+  Row,
+  Col,
+  Button,
+  ListGroup,
+  Table,
+} from "react-bootstrap";
+import { companies, transactions } from "./CompaniesForDisplay";
 
 const CompanyDetail = () => {
   const { id } = useParams();
@@ -20,15 +28,40 @@ const CompanyDetail = () => {
               <Button variant="primary">更多信息</Button>
             </Card.Body>
           </Card>
-          <Card className="mt-3">
-            <Card.Header>公司活动</Card.Header>
-            <ListGroup variant="flush">
-              {company.Products.map((event, index) => (
-                <ListGroup.Item key={index}>
-                  {event.name} - {event.date}
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
+          <Card>
+            {" "}
+            <Card className="card-plain table-plain-bg">
+              <Card.Header>
+                <Card.Title as="h4">Table on Plain Background</Card.Title>
+                <p className="card-category">
+                  Here is a subtitle for this table
+                </p>
+              </Card.Header>
+              <Card.Body className="table-responsive p-0">
+                <Table className="table-hover">
+                  <thead>
+                    <tr>
+                      <th>合同名称</th>
+                      <th>交货时间</th>
+                      <th>产品名称</th>
+                      <th>发出货量</th>
+                      <th>收货地址</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.map((t) => (
+                      <tr>
+                        <td>合同名称</td>
+                        <td>{t.DeliveryDate}</td>
+                        <td>{t.ProductSpecID}</td>
+                        <td>{t.ShippedQuantity}</td>
+                        <td>{t.LoadingAddress}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Card.Body>
+            </Card>
           </Card>
         </Col>
         <Col md={4}>
