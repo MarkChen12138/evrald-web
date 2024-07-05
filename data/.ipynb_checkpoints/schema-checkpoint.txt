@@ -1,0 +1,40 @@
+-- company_data schema
+
+CREATE TABLE contracts (
+    ContractID VARCHAR(20) PRIMARY KEY,
+    ContractMonth INT,
+    ContractDate DATE,
+    SalesUnitID INT,
+    PurchaseUnitID INT
+);
+
+CREATE TABLE companies (
+    CompanyID INT PRIMARY KEY AUTO_INCREMENT,
+    CompanyName VARCHAR(255)
+);
+
+CREATE TABLE products (
+    ProductID INT PRIMARY KEY AUTO_INCREMENT,
+    ProductName VARCHAR(255)
+);
+
+CREATE TABLE transactions (
+    TransactionID INT PRIMARY KEY AUTO_INCREMENT,
+    ProductID INT,
+    DeliveryDate DATE,
+    ContractQuantity INT,
+    ContractRemaining FLOAT,
+    ShippedQuantity FLOAT,
+    ShipName VARCHAR(255),
+    LoadingAddress VARCHAR(255),
+    SalePrice INT,
+    PurchasePrice INT
+);
+
+CREATE TABLE contracttransactions (
+    ContractID VARCHAR(20),
+    TransactionID INT,
+    PRIMARY KEY (ContractID, TransactionID),
+    FOREIGN KEY (ContractID) REFERENCES contracts(ContractID),
+    FOREIGN KEY (TransactionID) REFERENCES transactions(TransactionID)
+);
