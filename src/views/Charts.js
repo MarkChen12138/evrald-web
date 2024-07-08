@@ -17,10 +17,37 @@ import {
 import { useState, useEffect } from "react";
 
 function Charts() {
-  const [data, setData] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [productId, setProductId] = useState(0);
+  const [productInfo, setProductInfo] = useState([]); // 产品信息
   const [loading, setLoading] = useState(false);
 
+  //fetch company products
+  useEffect(() => {
+    const fetchCompanyProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          "https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=0" // 获取公司产品的API
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const jsonData = await response.json();
+        setProductInfo(jsonData);
+        console.log("Product Info:", productInfo);
+      } catch (error) {
+        console.error("Failed to fetch company products:", error);
+        setProductInfo([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompanyProducts();
+  }, []);
+
+  //fetch company data for specific product
   useEffect(() => {
     async function fetchCompanies() {
       setLoading(true); // 开始加载数据
@@ -32,407 +59,445 @@ function Charts() {
           throw new Error("Network response was not ok");
         }
         const jsonData = await response.json();
-        setData(jsonData);
+        setTransactions(jsonData);
         console.log(jsonData);
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        setData([]);
+        setTransactions([]);
       } finally {
-        setLoading(false); // 结束加载数据
+        setLoading(false);
       }
     }
-
     fetchCompanies();
-  }, [productId]); // 当productId变化时触发
+  }, [productId]);
 
   if (loading) {
-    return <div>Loading...</div>; // 在加载数据时显示加载状态
+    return <div>Loading...</div>;
   }
 
-  return (
-    <div>
-      <p>Filter by Product ID:</p>
-      <select onChange={(e) => setProductId(e.target.value)}>
-        <option value="0">Select a Product ID</option>
-        <option value="1">Product 1</option>
-        <option value="2">Product 2</option>
-        <option value="3">Product 3</option>
-      </select>
-      <ul>
-        {data.map((company, index) => (
-          <li key={index}>
-            {company.DeliveryDate}: {company.SalePrice} -{" "}
-            {company.PurchasePrice}
-          </li>
-        ))}
-      </ul>
-    </div>
+  const profitRates = transactions.map((t) =>
+    (((t.SalePrice - t.PurchasePrice) / t.PurchasePrice) * 100).toFixed(2)
   );
 
-  // return (
-  //   <>
-  //     <Container fluid>
-  //       <Row>
-  //         <Col md="6">
-  //           <Card>
-  //             <Card.Header>
-  //               <Card.Title as="h4">24 Hours Performance</Card.Title>
-  //               <p className="card-category">Line Chart</p>
-  //             </Card.Header>
-  //             <Card.Body>
-  //               <ChartistGraph
-  //                 type="Line"
-  //                 data={{
-  //                   labels: [
-  //                     "6pm",
-  //                     "9pm",
-  //                     "11pm",
-  //                     "2am",
-  //                     "4am",
-  //                     "8am",
-  //                     "2pm",
-  //                     "5pm",
-  //                     "8pm",
-  //                     "11pm",
-  //                     "4am",
-  //                   ],
-  //                   series: [[1, 6, 8, 7, 4, 7, 8, 12, 16, 17, 14]],
-  //                 }}
-  //                 options={{
-  //                   showPoint: false,
-  //                   lineSmooth: true,
-  //                   height: "260px",
-  //                   axisX: {
-  //                     showGrid: false,
-  //                     showLabel: true,
-  //                   },
-  //                   axisY: {
-  //                     offset: 40,
-  //                   },
-  //                   low: 0,
-  //                   high: 16,
-  //                   chartPadding: {
-  //                     right: -18,
-  //                   },
-  //                 }}
-  //               />
-  //             </Card.Body>
-  //           </Card>
-  //         </Col>
-  //         <Col md="6">
-  //           <Card>
-  //             <Card.Header>
-  //               <Card.Title as="h4">NASDAQ: AAPL</Card.Title>
-  //               <p className="card-category">Line Chart with Points</p>
-  //             </Card.Header>
-  //             <Card.Body>
-  //               <ChartistGraph
-  //                 type="Line"
-  //                 data={{
-  //                   labels: [
-  //                     "'07",
-  //                     "'08",
-  //                     "'09",
-  //                     "'10",
-  //                     "'11",
-  //                     "'12",
-  //                     "'13",
-  //                     "'14",
-  //                     "'15",
-  //                   ],
-  //                   series: [
-  //                     [
-  //                       22.2,
-  //                       34.9,
-  //                       42.28,
-  //                       51.93,
-  //                       62.21,
-  //                       80.23,
-  //                       82.12,
-  //                       102.5,
-  //                       107.23,
-  //                     ],
-  //                   ],
-  //                 }}
-  //                 options={{
-  //                   lineSmooth: false,
-  //                   height: "260px",
-  //                   axisY: {
-  //                     offset: 40,
-  //                     labelInterpolationFnc: function (value) {
-  //                       return "$" + value;
-  //                     },
-  //                   },
-  //                   low: 10,
-  //                   high: 110,
-  //                   classNames: {
-  //                     point: "ct-point ct-green",
-  //                     line: "ct-line ct-green",
-  //                   },
-  //                   chartPadding: {
-  //                     right: -25,
-  //                   },
-  //                 }}
-  //               />
-  //             </Card.Body>
-  //           </Card>
-  //         </Col>
-  //       </Row>
-  //       <Row>
-  //         <Col md="6">
-  //           <Card>
-  //             <Card.Header>
-  //               <Card.Title as="h4">User Behavior</Card.Title>
-  //               <p className="card-category">Multiple Lines Charts</p>
-  //             </Card.Header>
-  //             <Card.Body>
-  //               <ChartistGraph
-  //                 type="Line"
-  //                 data={{
-  //                   labels: [
-  //                     "'06",
-  //                     "'07",
-  //                     "'08",
-  //                     "'09",
-  //                     "'10",
-  //                     "'11",
-  //                     "'12",
-  //                     "'13",
-  //                     "'14",
-  //                     "'15",
-  //                   ],
-  //                   series: [
-  //                     [287, 385, 490, 554, 586, 698, 752, 788, 846, 944],
-  //                     [67, 152, 143, 287, 335, 435, 539, 542, 544, 647],
-  //                     [23, 113, 67, 190, 239, 307, 308, 410, 410, 509],
-  //                   ],
-  //                 }}
-  //                 options={{
-  //                   low: 0,
-  //                   high: 1000,
-  //                   showArea: false,
-  //                   height: "245px",
-  //                   axisX: {
-  //                     showGrid: true,
-  //                   },
-  //                   lineSmooth: true,
-  //                   showLine: true,
-  //                   showPoint: true,
-  //                   chartPadding: {
-  //                     right: -25,
-  //                   },
-  //                 }}
-  //                 responsiveOptions={[
-  //                   [
-  //                     "screen and (max-width: 640px)",
-  //                     {
-  //                       axisX: {
-  //                         labelInterpolationFnc: function (value) {
-  //                           return value[0];
-  //                         },
-  //                       },
-  //                     },
-  //                   ],
-  //                 ]}
-  //               />
-  //             </Card.Body>
-  //             <Card.Footer>
-  //               <div className="legend">
-  //                 <i className="fas fa-circle text-info"></i>
-  //                 Open <i className="fas fa-circle text-danger"></i>
-  //                 Click <i className="fas fa-circle text-warning"></i>
-  //                 Click Second Time
-  //               </div>
-  //               <hr></hr>
-  //               <div className="stats">
-  //                 <i className="fas fa-history"></i>
-  //                 Updated 3 minutes ago
-  //               </div>
-  //             </Card.Footer>
-  //           </Card>
-  //         </Col>
-  //         <Col md="6">
-  //           <Card>
-  //             <Card.Header>
-  //               <Card.Title as="h4">Public Preferences</Card.Title>
-  //               <p className="card-category">Pie Chart</p>
-  //             </Card.Header>
-  //             <Card.Body>
-  //               <ChartistGraph
-  //                 type="Pie"
-  //                 data={{
-  //                   labels: ["62%", "32%", "6%"],
-  //                   series: [62, 32, 6],
-  //                 }}
-  //               />
-  //             </Card.Body>
-  //             <Card.Footer>
-  //               <div className="legend">
-  //                 <i className="fas fa-circle text-info"></i>
-  //                 Open <i className="fas fa-circle text-danger"></i>
-  //                 Bounce <i className="fas fa-circle text-warning"></i>
-  //                 Unsubscribe
-  //               </div>
-  //               <hr></hr>
-  //               <div className="stats">
-  //                 <i className="far fa-clock-o"></i>
-  //                 Campaign sent 2 days ago
-  //               </div>
-  //             </Card.Footer>
-  //           </Card>
-  //         </Col>
-  //       </Row>
-  //       <Row>
-  //         <Col md="6">
-  //           <Card>
-  //             <Card.Header>
-  //               <Card.Title as="h4">Views</Card.Title>
-  //               <p className="card-category">Bar Chart</p>
-  //             </Card.Header>
-  //             <Card.Body>
-  //               <ChartistGraph
-  //                 type="Bar"
-  //                 data={{
-  //                   labels: [
-  //                     "Jan",
-  //                     "Feb",
-  //                     "Mar",
-  //                     "Apr",
-  //                     "Mai",
-  //                     "Jun",
-  //                     "Jul",
-  //                     "Aug",
-  //                     "Sep",
-  //                     "Oct",
-  //                     "Nov",
-  //                     "Dec",
-  //                   ],
-  //                   series: [
-  //                     [
-  //                       542,
-  //                       443,
-  //                       320,
-  //                       780,
-  //                       553,
-  //                       453,
-  //                       326,
-  //                       434,
-  //                       568,
-  //                       610,
-  //                       756,
-  //                       895,
-  //                     ],
-  //                   ],
-  //                 }}
-  //                 options={{
-  //                   seriesBarDistance: 10,
-  //                   classNames: {
-  //                     bar: "ct-bar ct-azure",
-  //                   },
-  //                   axisX: {
-  //                     showGrid: false,
-  //                   },
-  //                 }}
-  //                 responsiveOptions={[
-  //                   [
-  //                     "screen and (max-width: 640px)",
-  //                     {
-  //                       seriesBarDistance: 5,
-  //                       axisX: {
-  //                         labelInterpolationFnc: function (value) {
-  //                           return value[0];
-  //                         },
-  //                       },
-  //                     },
-  //                   ],
-  //                 ]}
-  //               />
-  //             </Card.Body>
-  //           </Card>
-  //         </Col>
-  //         <Col md="6">
-  //           <Card>
-  //             <Card.Header>
-  //               <Card.Title as="h4">Activity</Card.Title>
-  //               <p className="card-category">Multiple Bars Chart</p>
-  //             </Card.Header>
-  //             <Card.Body>
-  //               <ChartistGraph
-  //                 type="Bar"
-  //                 data={{
-  //                   labels: [
-  //                     "Jan",
-  //                     "Feb",
-  //                     "Mar",
-  //                     "Apr",
-  //                     "Mai",
-  //                     "Jun",
-  //                     "Jul",
-  //                     "Aug",
-  //                     "Sep",
-  //                     "Oct",
-  //                     "Nov",
-  //                     "Dec",
-  //                   ],
-  //                   series: [
-  //                     [
-  //                       542,
-  //                       443,
-  //                       320,
-  //                       780,
-  //                       553,
-  //                       453,
-  //                       326,
-  //                       434,
-  //                       568,
-  //                       610,
-  //                       756,
-  //                       895,
-  //                     ],
-  //                     [
-  //                       412,
-  //                       243,
-  //                       280,
-  //                       580,
-  //                       453,
-  //                       353,
-  //                       300,
-  //                       364,
-  //                       368,
-  //                       410,
-  //                       636,
-  //                       695,
-  //                     ],
-  //                   ],
-  //                 }}
-  //                 options={{
-  //                   seriesBarDistance: 10,
-  //                   axisX: {
-  //                     showGrid: false,
-  //                   },
-  //                   height: "245px",
-  //                 }}
-  //                 responsiveOptions={[
-  //                   [
-  //                     "screen and (max-width: 640px)",
-  //                     {
-  //                       seriesBarDistance: 5,
-  //                       axisX: {
-  //                         labelInterpolationFnc: function (value) {
-  //                           return value[0];
-  //                         },
-  //                       },
-  //                     },
-  //                   ],
-  //                 ]}
-  //               />
-  //             </Card.Body>
-  //           </Card>
-  //         </Col>
-  //       </Row>
-  //     </Container>
-  //   </>
-  // );
+  const data = {
+    labels: transactions.map((t) => {
+      const date = new Date(t.DeliveryDate);
+      const formatter = new Intl.DateTimeFormat("zh-CN", {
+        month: "long",
+        day: "numeric",
+      });
+      return formatter.format(date);
+    }),
+    series: [
+      transactions.map((t) => t.PurchasePrice),
+      transactions.map((t) => t.SalePrice),
+    ],
+  };
+
+  const options = {
+    showArea: false,
+    height: "245px",
+    axisX: {
+      showGrid: true,
+      showLabel: true, // 显示横轴标签
+    },
+    axisY: {
+      labelInterpolationFnc: (value) => `$${value}`,
+      offset: 0,
+      showLabel: true, // 显示横轴标签
+    },
+    axisY2: {
+      show: true,
+      labelInterpolationFnc: (value) => `${value}% profit`,
+      offset: 80,
+      showLabel: true, // 显示横轴标签
+    },
+  };
+
+  const responsiveOptions = [
+    [
+      "screen and (max-width: 640px)",
+      {
+        axisX: {
+          labelInterpolationFnc: (value, index) =>
+            index % 5 === 0 ? value : null,
+        },
+      },
+    ],
+    [
+      "screen and (min-width: 641px)",
+      {
+        axisX: {
+          labelInterpolationFnc: (value, index) =>
+            index % 3 === 0 ? value : null,
+        },
+      },
+    ],
+  ];
+
+  return (
+    <>
+      <p>Filter by Product ID:</p>
+      <select onChange={(e) => setProductId(e.target.value)}>
+        {productInfo.map((product, index) => (
+          <option key={index} value={product.ProductID}>
+            {product.ProductName}
+          </option>
+        ))}
+      </select>
+      <Card>
+        <Card.Header>
+          <Card.Title as="h4">最近交易记录分析</Card.Title>
+          <p className="card-category">基于最近10次的交易记录</p>
+          {profitRates}
+        </Card.Header>
+        <Card.Body>
+          <ChartistGraph
+            type="Line"
+            data={data}
+            options={options}
+            responsiveOptions={responsiveOptions}
+          />
+        </Card.Body>
+        <Card.Footer>
+          <div className="legend">
+            <i className="fas fa-circle text-info"></i> Buy Price
+            <i className="fas fa-circle text-danger"></i> Sell Price
+            {/* <i className="fas fa-circle text-warning"></i> Profit Rate */}
+          </div>
+          <hr />
+          <div className="stats">
+            <i className="fas fa-history"></i> Updated 3 minutes ago
+          </div>
+        </Card.Footer>
+      </Card>{" "}
+      <>
+        <Container fluid>
+          <Row>
+            <Col md="6">
+              <Card>
+                <Card.Header>
+                  <Card.Title as="h4">24 Hours Performance</Card.Title>
+                  <p className="card-category">Line Chart</p>
+                </Card.Header>
+                <Card.Body>
+                  <ChartistGraph
+                    type="Line"
+                    data={{
+                      labels: [
+                        "6pm",
+                        "9pm",
+                        "11pm",
+                        "2am",
+                        "4am",
+                        "8am",
+                        "2pm",
+                        "5pm",
+                        "8pm",
+                        "11pm",
+                        "4am",
+                      ],
+                      series: [[1, 6, 8, 7, 4, 7, 8, 12, 16, 17, 14]],
+                    }}
+                    options={{
+                      showPoint: false,
+                      lineSmooth: true,
+                      height: "260px",
+                      axisX: {
+                        showGrid: false,
+                        showLabel: true,
+                      },
+                      axisY: {
+                        offset: 40,
+                      },
+                      low: 0,
+                      high: 16,
+                      chartPadding: {
+                        right: -18,
+                      },
+                    }}
+                  />
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md="6">
+              <Card>
+                <Card.Header>
+                  <Card.Title as="h4">NASDAQ: AAPL</Card.Title>
+                  <p className="card-category">Line Chart with Points</p>
+                </Card.Header>
+                <Card.Body>
+                  <ChartistGraph
+                    type="Line"
+                    data={{
+                      labels: [
+                        "'07",
+                        "'08",
+                        "'09",
+                        "'10",
+                        "'11",
+                        "'12",
+                        "'13",
+                        "'14",
+                        "'15",
+                      ],
+                      series: [
+                        [
+                          22.2, 34.9, 42.28, 51.93, 62.21, 80.23, 82.12, 102.5,
+                          107.23,
+                        ],
+                      ],
+                    }}
+                    options={{
+                      lineSmooth: false,
+                      height: "260px",
+                      axisY: {
+                        offset: 40,
+                        labelInterpolationFnc: function (value) {
+                          return "$" + value;
+                        },
+                      },
+                      low: 10,
+                      high: 110,
+                      classNames: {
+                        point: "ct-point ct-green",
+                        line: "ct-line ct-green",
+                      },
+                      chartPadding: {
+                        right: -25,
+                      },
+                    }}
+                  />
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col md="6">
+              <Card>
+                <Card.Header>
+                  <Card.Title as="h4">User Behavior</Card.Title>
+                  <p className="card-category">Multiple Lines Charts</p>
+                </Card.Header>
+                <Card.Body>
+                  <ChartistGraph
+                    type="Line"
+                    data={{
+                      labels: [
+                        "'06",
+                        "'07",
+                        "'08",
+                        "'09",
+                        "'10",
+                        "'11",
+                        "'12",
+                        "'13",
+                        "'14",
+                        "'15",
+                      ],
+                      series: [
+                        [287, 385, 490, 554, 586, 698, 752, 788, 846, 944],
+                        [67, 152, 143, 287, 335, 435, 539, 542, 544, 647],
+                        [23, 113, 67, 190, 239, 307, 308, 410, 410, 509],
+                      ],
+                    }}
+                    options={{
+                      low: 0,
+                      high: 1000,
+                      showArea: false,
+                      height: "245px",
+                      axisX: {
+                        showGrid: true,
+                      },
+                      lineSmooth: true,
+                      showLine: true,
+                      showPoint: true,
+                      chartPadding: {
+                        right: -25,
+                      },
+                    }}
+                    responsiveOptions={[
+                      [
+                        "screen and (max-width: 640px)",
+                        {
+                          axisX: {
+                            labelInterpolationFnc: function (value) {
+                              return value[0];
+                            },
+                          },
+                        },
+                      ],
+                    ]}
+                  />
+                </Card.Body>
+                <Card.Footer>
+                  <div className="legend">
+                    <i className="fas fa-circle text-info"></i>
+                    Open <i className="fas fa-circle text-danger"></i>
+                    Click <i className="fas fa-circle text-warning"></i>
+                    Click Second Time
+                  </div>
+                  <hr></hr>
+                  <div className="stats">
+                    <i className="fas fa-history"></i>
+                    Updated 3 minutes ago
+                  </div>
+                </Card.Footer>
+              </Card>
+            </Col>
+            <Col md="6">
+              <Card>
+                <Card.Header>
+                  <Card.Title as="h4">Public Preferences</Card.Title>
+                  <p className="card-category">Pie Chart</p>
+                </Card.Header>
+                <Card.Body>
+                  <ChartistGraph
+                    type="Pie"
+                    data={{
+                      labels: ["62%", "32%", "6%"],
+                      series: [62, 32, 6],
+                    }}
+                  />
+                </Card.Body>
+                <Card.Footer>
+                  <div className="legend">
+                    <i className="fas fa-circle text-info"></i>
+                    Open <i className="fas fa-circle text-danger"></i>
+                    Bounce <i className="fas fa-circle text-warning"></i>
+                    Unsubscribe
+                  </div>
+                  <hr></hr>
+                  <div className="stats">
+                    <i className="far fa-clock-o"></i>
+                    Campaign sent 2 days ago
+                  </div>
+                </Card.Footer>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col md="6">
+              <Card>
+                <Card.Header>
+                  <Card.Title as="h4">Views</Card.Title>
+                  <p className="card-category">Bar Chart</p>
+                </Card.Header>
+                <Card.Body>
+                  <ChartistGraph
+                    type="Bar"
+                    data={{
+                      labels: [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "Mai",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+                      ],
+                      series: [
+                        [
+                          542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756,
+                          895,
+                        ],
+                      ],
+                    }}
+                    options={{
+                      seriesBarDistance: 10,
+                      classNames: {
+                        bar: "ct-bar ct-azure",
+                      },
+                      axisX: {
+                        showGrid: false,
+                      },
+                    }}
+                    responsiveOptions={[
+                      [
+                        "screen and (max-width: 640px)",
+                        {
+                          seriesBarDistance: 5,
+                          axisX: {
+                            labelInterpolationFnc: function (value) {
+                              return value[0];
+                            },
+                          },
+                        },
+                      ],
+                    ]}
+                  />
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md="6">
+              <Card>
+                <Card.Header>
+                  <Card.Title as="h4">Activity</Card.Title>
+                  <p className="card-category">Multiple Bars Chart</p>
+                </Card.Header>
+                <Card.Body>
+                  <ChartistGraph
+                    type="Bar"
+                    data={{
+                      labels: [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "Mai",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+                      ],
+                      series: [
+                        [
+                          542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756,
+                          895,
+                        ],
+                        [
+                          412, 243, 280, 580, 453, 353, 300, 364, 368, 410, 636,
+                          695,
+                        ],
+                      ],
+                    }}
+                    options={{
+                      seriesBarDistance: 10,
+                      axisX: {
+                        showGrid: false,
+                      },
+                      height: "245px",
+                    }}
+                    responsiveOptions={[
+                      [
+                        "screen and (max-width: 640px)",
+                        {
+                          seriesBarDistance: 5,
+                          axisX: {
+                            labelInterpolationFnc: function (value) {
+                              return value[0];
+                            },
+                          },
+                        },
+                      ],
+                    ]}
+                  />
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </>
+    </>
+  );
 }
 
 export default Charts;
