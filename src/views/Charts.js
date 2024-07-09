@@ -75,65 +75,197 @@ function Charts() {
     return <div>Loading...</div>;
   }
 
-  const profitRates = transactions.map((t) =>
-    (((t.SalePrice - t.PurchasePrice) / t.PurchasePrice) * 100).toFixed(2)
-  );
+  const ProfitGroupedByMonth = () => {
+    const groupByMonth = (transactions) => {
+      const grouped = {};
+      transactions.forEach((t) => {
+        const date = new Date(t.DeliveryDate);
+        const month = `${date.getFullYear()}-${date.getMonth() + 1}`;
 
-  const data = {
-    labels: transactions.map((t) => {
-      const date = new Date(t.DeliveryDate);
-      const formatter = new Intl.DateTimeFormat("zh-CN", {
-        month: "long",
-        day: "numeric",
+        if (!grouped[month]) {
+          grouped[month] = {
+            PurchasePrice: 0,
+            SalePrice: 0,
+            Profit: 0,
+            count: 0,
+          };
+        }
+        grouped[month].Profit +=
+          (t.SalePrice - t.PurchasePrice) * t.ShippedQuantity;
+        grouped[month].count += 1;
       });
-      return formatter.format(date);
-    }),
-    series: [
-      transactions.map((t) => t.PurchasePrice),
-      transactions.map((t) => t.SalePrice),
-    ],
+
+      return grouped;
+    };
+
+    const groupedTransactions = groupByMonth(transactions);
+
+    const months = Object.keys(groupedTransactions);
+    const profits = Object.values(groupedTransactions).map(
+      (g) => g.Profit / 10000
+    );
+
+    const data = {
+      labels: months,
+      series: [profits],
+    };
+
+    const options = {
+      showArea: false,
+      height: "245px",
+      axisX: {
+        showGrid: true,
+        showLabel: true,
+      },
+      axisY: {
+        labelInterpolationFnc: (value) => `${value}`,
+        showGrid: true,
+        showLabel: true,
+      },
+    };
+
+    const responsiveOptions = [
+      [
+        "screen and (max-width: 640px)",
+        {
+          axisX: {
+            labelInterpolationFnc: (value, index) =>
+              index % 5 === 0 ? value : null,
+          },
+        },
+      ],
+      [
+        "screen and (min-width: 641px)",
+        {
+          axisX: {
+            labelInterpolationFnc: (value, index) =>
+              index % 3 === 0 ? value : null,
+          },
+        },
+      ],
+    ];
+
+    return (
+      <Card>
+        <Card.Header>
+          <Card.Title as="h4">最近交易利润分析（万元/每月）</Card.Title>
+          <p className="card-category">基于历史的交易记录</p>
+        </Card.Header>
+        <Card.Body>
+          <ChartistGraph
+            type="Line"
+            data={data}
+            options={options}
+            responsiveOptions={responsiveOptions}
+          />
+        </Card.Body>
+      </Card>
+    );
   };
 
-  const options = {
-    showArea: false,
-    height: "245px",
-    axisX: {
-      showGrid: true,
-      showLabel: true, // 显示横轴标签
-    },
-    axisY: {
-      labelInterpolationFnc: (value) => `$${value}`,
-      offset: 0,
-      showLabel: true, // 显示横轴标签
-    },
-    axisY2: {
-      show: true,
-      labelInterpolationFnc: (value) => `${value}% profit`,
-      offset: 80,
-      showLabel: true, // 显示横轴标签
-    },
-  };
+  const TradingShareGroupedByHalfYear = () => {
+    const groupByHalfYear = (transactions) => {
+      const grouped = {};
+      transactions.forEach((t) => {
+        const date = new Date(t.DeliveryDate);
+        const halfYear = `${date.getFullYear()}-${
+          date.getMonth() < 6 ? "1" : "2"
+        }`;
 
-  const responsiveOptions = [
-    [
-      "screen and (max-width: 640px)",
-      {
-        axisX: {
-          labelInterpolationFnc: (value, index) =>
-            index % 5 === 0 ? value : null,
-        },
+        if (!grouped[halfYear]) {
+          grouped[halfYear] = {
+            PurchasePrice: 0,
+            SalePrice: 0,
+            Profit: 0,
+            count: 0,
+          };
+        }
+        grouped[halfYear].Profit +=
+          (t.SalePrice - t.PurchasePrice) * t.ShippedQuantity;
+        grouped[halfYear].count += 1;
+      });
+
+      return grouped;
+    };
+
+    const groupedTransactions = groupByHalfYear(transactions);
+
+    const halfYears = Object.keys(groupedTransactions);
+    const profits = Object.values(groupedTransactions).map(
+      (g) => g.Profit / 10000
+    );
+
+    const data = {
+      labels: halfYears,
+      series: [profits],
+    };
+
+    const options = {
+      showArea: false,
+      height: "245px",
+      axisX: {
+        showGrid: true,
+        showLabel: true,
       },
-    ],
-    [
-      "screen and (min-width: 641px)",
-      {
-        axisX: {
-          labelInterpolationFnc: (value, index) =>
-            index % 3 === 0 ? value : null,
-        },
+      axisY: {
+        labelInterpolationFnc: (value) => `${value}`,
+        showGrid: true,
+        showLabel: true,
       },
-    ],
-  ];
+    };
+
+    const responsiveOptions = [
+      [
+        "screen and (max-width: 640px)",
+        {
+          axisX: {
+            labelInterpolationFnc: (value, index) =>
+              index % 5 === 0 ? value : null,
+          },
+        },
+      ],
+      [
+        "screen and (min-width: 641px)",
+        {
+          axisX: {
+            labelInterpolationFnc: (value, index) =>
+              index % 3 === 0 ? value : null,
+          },
+        },
+      ],
+    ];
+
+    return (
+      <Card>
+        <Card.Header>
+          <Card.Title as="h4">销量总额占比</Card.Title>
+          <p className="card-category">基于最近6个月的贸易量总和</p>
+        </Card.Header>
+        <Card.Body>
+          <ChartistGraph
+            type="Pie"
+            data={{
+              labels: ["62%", "32%", "6%"],
+              series: [62, 32, 6],
+            }}
+          />
+        </Card.Body>
+        <Card.Footer>
+          <div className="legend">
+            <i className="fas fa-circle text-info"></i>
+            常青实业 <i className="fas fa-circle text-danger"></i>
+            东方油 <i className="fas fa-circle text-warning"></i>
+            山东天弘
+          </div>
+          <hr></hr>
+          <div className="stats">
+            <i className="far fa-clock-o"></i>
+            交易量由Evrald交易链条提供
+          </div>
+        </Card.Footer>
+      </Card>
+    );
+  };
 
   return (
     <>
@@ -145,82 +277,18 @@ function Charts() {
           </option>
         ))}
       </select>
-      <Card>
-        <Card.Header>
-          <Card.Title as="h4">最近交易记录分析</Card.Title>
-          <p className="card-category">基于最近10次的交易记录</p>
-          {profitRates}
-        </Card.Header>
-        <Card.Body>
-          <ChartistGraph
-            type="Line"
-            data={data}
-            options={options}
-            responsiveOptions={responsiveOptions}
-          />
-        </Card.Body>
-        <Card.Footer>
-          <div className="legend">
-            <i className="fas fa-circle text-info"></i> Buy Price
-            <i className="fas fa-circle text-danger"></i> Sell Price
-            {/* <i className="fas fa-circle text-warning"></i> Profit Rate */}
-          </div>
-          <hr />
-          <div className="stats">
-            <i className="fas fa-history"></i> Updated 3 minutes ago
-          </div>
-        </Card.Footer>
-      </Card>{" "}
+
       <>
         <Container fluid>
           <Row>
             <Col md="6">
-              <Card>
-                <Card.Header>
-                  <Card.Title as="h4">24 Hours Performance</Card.Title>
-                  <p className="card-category">Line Chart</p>
-                </Card.Header>
-                <Card.Body>
-                  <ChartistGraph
-                    type="Line"
-                    data={{
-                      labels: [
-                        "6pm",
-                        "9pm",
-                        "11pm",
-                        "2am",
-                        "4am",
-                        "8am",
-                        "2pm",
-                        "5pm",
-                        "8pm",
-                        "11pm",
-                        "4am",
-                      ],
-                      series: [[1, 6, 8, 7, 4, 7, 8, 12, 16, 17, 14]],
-                    }}
-                    options={{
-                      showPoint: false,
-                      lineSmooth: true,
-                      height: "260px",
-                      axisX: {
-                        showGrid: false,
-                        showLabel: true,
-                      },
-                      axisY: {
-                        offset: 40,
-                      },
-                      low: 0,
-                      high: 16,
-                      chartPadding: {
-                        right: -18,
-                      },
-                    }}
-                  />
-                </Card.Body>
-              </Card>
+              <ProfitGroupedByMonth />
             </Col>
             <Col md="6">
+              <TradingShareGroupedByHalfYear />
+            </Col>
+          </Row>
+          {/* <Col md="6">
               <Card>
                 <Card.Header>
                   <Card.Title as="h4">NASDAQ: AAPL</Card.Title>
@@ -345,39 +413,10 @@ function Charts() {
                 </Card.Footer>
               </Card>
             </Col>
-            <Col md="6">
-              <Card>
-                <Card.Header>
-                  <Card.Title as="h4">Public Preferences</Card.Title>
-                  <p className="card-category">Pie Chart</p>
-                </Card.Header>
-                <Card.Body>
-                  <ChartistGraph
-                    type="Pie"
-                    data={{
-                      labels: ["62%", "32%", "6%"],
-                      series: [62, 32, 6],
-                    }}
-                  />
-                </Card.Body>
-                <Card.Footer>
-                  <div className="legend">
-                    <i className="fas fa-circle text-info"></i>
-                    Open <i className="fas fa-circle text-danger"></i>
-                    Bounce <i className="fas fa-circle text-warning"></i>
-                    Unsubscribe
-                  </div>
-                  <hr></hr>
-                  <div className="stats">
-                    <i className="far fa-clock-o"></i>
-                    Campaign sent 2 days ago
-                  </div>
-                </Card.Footer>
-              </Card>
-            </Col>
+            <Col md="6"></Col>
           </Row>
-          <Row>
-            <Col md="6">
+          <Row> */}
+          {/* <Col md="6">
               <Card>
                 <Card.Header>
                   <Card.Title as="h4">Views</Card.Title>
@@ -492,8 +531,7 @@ function Charts() {
                   />
                 </Card.Body>
               </Card>
-            </Col>
-          </Row>
+            </Col> */}
         </Container>
       </>
     </>
