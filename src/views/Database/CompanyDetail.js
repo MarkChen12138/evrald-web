@@ -10,14 +10,40 @@ import {
   Table,
 } from "react-bootstrap";
 import { companies, transactions } from "./CompaniesForDisplay";
+import { useEffect } from "react";
 
 const CompanyDetail = () => {
   const { id } = useParams();
-  const company = companies.find((c) => c.CompanyID === parseInt(id));
+  const [company, setCompany] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await fetch(
+          `https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=0&companyId=${id}` // 获取公司产品的API
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const jsonData = await response.json();
+        console.log("Fetched Company Info:", jsonData); // 记录获取到的数据
+        setCompany(jsonData);
+      } catch (error) {
+        console.error("Failed to fetch company products:", error);
+        setCompany([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
 
   return (
     <Container fluid>
       <Row className="mt-4">
+        <p>{company}</p>
         <Col md={8}>
           <Card>
             <Card.Body>

@@ -28,7 +28,7 @@ function Charts() {
       setLoading(true);
       try {
         const response = await fetch(
-          "https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=0" // 获取公司产品的API
+          "https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=0&companyId=0" // 获取公司产品的API
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -53,7 +53,7 @@ function Charts() {
       setLoading(true); // 开始加载数据
       try {
         const response = await fetch(
-          `https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=${productId}`
+          `https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=${productId}&companyId=0`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
