@@ -1,31 +1,29 @@
 import React from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
-import { useHistory } from "react-router-dom"; // 导入 useHistory 钩子
+import { useHistory, Route, Switch } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { CompanyDetail } from "./CompanyDetail";
+import CompanyDetail from "./CompanyDetail";
 
-function Database() {
-  const history = useHistory(); // 使用 useHistory 钩子获取 history 实例
+function Database({ match }) {
   const [companyInfo, setCompanyInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [companyID, setCompanyID] = useState(-1);
+  const history = useHistory();
 
   const handleCardClick = (id) => {
-    console.log(id);
-    history.push(`/admin/company/${id}`); // 使用传入的公司 id 导航到公司详情页
+    history.push(`${match.url}/company/${id}`);
   };
 
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
         const response = await fetch(
-          `https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=0&companyId=${companyID}` // 获取公司产品的API
+          `https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=0&companyId=-1`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const jsonData = await response.json();
-        console.log("Fetched Company Info:", jsonData); // 记录获取到的数据
+        console.log("Fetched Company Info:", jsonData);
         setCompanyInfo(jsonData);
       } catch (error) {
         console.error("Failed to fetch company products:", error);
@@ -38,24 +36,31 @@ function Database() {
     fetchCompanies();
   }, []);
 
+  const AllCompanyInfos = () => {
+    return companyInfo.map((company) => (
+      <Col sm="4" key={company.CompanyID}>
+        <Card onClick={() => handleCardClick(company.CompanyID)}>
+          <Card.Img src={require("assets/img/blog-1.jpg")}></Card.Img>
+          <Card.Body className="text-center">
+            <code>{company.CompanyName}</code>
+          </Card.Body>
+        </Card>
+      </Col>
+    ));
+  };
+
   return (
     <Container fluid>
-      <Row>
-        {isLoading ? (
-          <h1>Loading...</h1>
-        ) : (
-          companyInfo.map((company) => (
-            <Col sm="4" key={company.CompanyID}>
-              <Card onClick={() => handleCardClick(company.CompanyID)}>
-                <Card.Img src={require("assets/img/blog-1.jpg")}></Card.Img>
-                <Card.Body className="text-center">
-                  <code>{company.CompanyName}</code>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))
-        )}
-      </Row>
+      <Switch>
+        <Route
+          exact
+          path={match.path}
+          render={() => (
+            <Row>{isLoading ? <h1>Loading...</h1> : <AllCompanyInfos />}</Row>
+          )}
+        />
+        <Route path={`${match.path}/company/:id`} component={CompanyDetail} />
+      </Switch>
     </Container>
   );
 }

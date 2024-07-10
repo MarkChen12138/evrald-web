@@ -45,26 +45,12 @@ import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 
 var routes = [
   {
-    collapse: true,
     path: "/database",
+    layout: "/admin",
     name: "数据库",
     state: "openComponents",
     icon: "nc-icon nc-alien-33",
-    views: [
-      {
-        path: "/chain-database",
-        layout: "/admin",
-        name: "Chain Database",
-        mini: "B",
-        component: Database,
-      },
-      {
-        path: "/company/:id",
-        layout: "/admin",
-        name: "ComapanyDetail",
-        component: CompanyDetail,
-      },
-    ],
+    component: Database,
   },
   {
     path: "/user-product",
