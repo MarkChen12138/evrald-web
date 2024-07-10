@@ -2,11 +2,13 @@ import React from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import { useHistory } from "react-router-dom"; // 导入 useHistory 钩子
 import { useState, useEffect } from "react";
+import { CompanyDetail } from "./CompanyDetail";
 
 function Database() {
   const history = useHistory(); // 使用 useHistory 钩子获取 history 实例
   const [companyInfo, setCompanyInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [companyID, setCompanyID] = useState(-1);
 
   const handleCardClick = (id) => {
     console.log(id);
@@ -17,7 +19,7 @@ function Database() {
     const fetchCompanies = async () => {
       try {
         const response = await fetch(
-          `https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=0&companyId=-1` // 获取公司产品的API
+          `https://findcompanies-kyxhiocbqa.cn-zhangjiakou.fcapp.run?productId=0&companyId=${companyID}` // 获取公司产品的API
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");

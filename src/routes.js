@@ -47,7 +47,7 @@ var routes = [
   {
     collapse: true,
     path: "/database",
-    name: "Database",
+    name: "数据库",
     state: "openComponents",
     icon: "nc-icon nc-alien-33",
     views: [

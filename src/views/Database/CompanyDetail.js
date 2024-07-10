@@ -27,7 +27,7 @@ const CompanyDetail = () => {
           throw new Error("Network response was not ok");
         }
         const jsonData = await response.json();
-        console.log("Fetched Company Info:", jsonData); // 记录获取到的数据
+        console.log("Fetched Company Info:", jsonData);
         setCompany(jsonData);
       } catch (error) {
         console.error("Failed to fetch company products:", error);
@@ -43,7 +43,6 @@ const CompanyDetail = () => {
   return (
     <Container fluid>
       <Row className="mt-4">
-        <p>{company}</p>
         <Col md={8}>
           <Card>
             <Card.Body>
@@ -55,7 +54,6 @@ const CompanyDetail = () => {
             </Card.Body>
           </Card>
           <Card>
-            {" "}
             <Card className="card-plain table-plain-bg">
               <Card.Header>
                 <Card.Title as="h4">Table on Plain Background</Card.Title>
@@ -101,7 +99,6 @@ const CompanyDetail = () => {
           <Card className="mt-3">
             <Card.Body>
               <Card.Title>公司地理位置</Card.Title>
-              {/* 地图占位符或实际地图组件 */}
               <div style={{ height: "200px", backgroundColor: "#eee" }}>
                 地图位置
               </div>
