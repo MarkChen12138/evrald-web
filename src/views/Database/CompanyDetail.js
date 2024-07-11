@@ -9,7 +9,6 @@ import {
   ListGroup,
   Table,
 } from "react-bootstrap";
-import { companies, transactions } from "./CompaniesForDisplay";
 import { useEffect } from "react";
 
 const CompanyDetail = () => {
@@ -40,8 +39,8 @@ const CompanyDetail = () => {
     fetchCompanies();
   }, []);
 
-  return (
-    <Container fluid>
+  const CompanyDetail = () => {
+    return (
       <Row className="mt-4">
         <Col md={8}>
           <Card>
@@ -56,32 +55,49 @@ const CompanyDetail = () => {
           <Card>
             <Card className="card-plain table-plain-bg">
               <Card.Header>
-                <Card.Title as="h4">Table on Plain Background</Card.Title>
+                <Card.Title as="h4">最近验证交易记录</Card.Title>
                 <p className="card-category">
-                  Here is a subtitle for this table
+                  验证状态为绿色表示验证通过，红色表示验证失败，黄色表示验证中
                 </p>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
-                <Table className="table-hover">
+                <Table className="table-hover text-center">
                   <thead>
                     <tr>
-                      <th>合同名称</th>
+                      <th>合同编号</th>
                       <th>交货时间</th>
                       <th>产品名称</th>
                       <th>发出货量</th>
-                      <th>收货地址</th>
+                      <th>验证状态</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions.map((t) => (
-                      <tr>
-                        <td>合同名称</td>
-                        <td>{t.DeliveryDate}</td>
-                        <td>{t.ProductSpecID}</td>
-                        <td>{t.ShippedQuantity}</td>
-                        <td>{t.LoadingAddress}</td>
-                      </tr>
-                    ))}
+                    {company.map((t) => {
+                      // 生成随机颜色
+                      const random = Math.random();
+                      let colorClass;
+                      if (random < 0.8) {
+                        colorClass = "text-success"; // 绿色 (80%的概率)
+                      } else if (random < 0.9) {
+                        colorClass = "text-danger"; // 红色 (10%的概率)
+                      } else {
+                        colorClass = "text-warning"; // 黄色 (10%的概率)
+                      }
+
+                      return (
+                        <tr key={t.ContractID}>
+                          <td>
+                            EV{t.ContractID.toUpperCase().substring(0, 5)}
+                          </td>
+                          <td>{t.ContractDate.substring(0, 10)}</td>
+                          <td>{t.PurchaseCompanyName}</td>
+                          <td>{t.SalesCompanyName}</td>
+                          <td>
+                            <i className={`fas fa-circle ${colorClass}`}></i>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </Table>
               </Card.Body>
@@ -106,6 +122,12 @@ const CompanyDetail = () => {
           </Card>
         </Col>
       </Row>
+    );
+  };
+
+  return (
+    <Container fluid>
+      {isLoading ? <h1>isLoading</h1> : <CompanyDetail />}
     </Container>
   );
 };
