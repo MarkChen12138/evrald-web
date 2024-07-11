@@ -39,7 +39,7 @@ import LoginPage from "views/Pages/LoginPage.js";
 import RegisterPage from "views/Pages/RegisterPage/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 import Database from "views/Database/Database";
-import UserProduct from "views/User/UserProduct";
+import EVGPT from "views/EVGPT/EVGPT";
 import CompanyDetail from "views/Database/CompanyDetail";
 import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 
@@ -55,12 +55,12 @@ var routes = [
   {
     path: "/user-product",
     layout: "/admin",
-    name: "User Product",
-    icon: "nc-icon nc-alien-33",
-    component: UserProduct,
+    name: "EVGPT",
+    icon: "nc-icon nc-bulb-63",
+    component: EVGPT,
   },
   {
-    path: "/dashboard",
+    path: "/EVGPT",
     layout: "/admin",
     name: "Dashboard",
     icon: "nc-icon nc-chart-pie-35",
