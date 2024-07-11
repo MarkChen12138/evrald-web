@@ -45,11 +45,11 @@ const CompanyDetail = () => {
         <Col md={8}>
           <Card>
             <Card.Body>
-              <Card.Title>{company.CompanyName}的详细信息</Card.Title>
-              <Card.Text>
-                {company.Description || "暂无更多描述信息。"}
-              </Card.Text>
-              <Button variant="primary">更多信息</Button>
+              <Card.Title style={{ fontWeight: "bold", fontSize: "2em" }}>
+                {id == company[0].PurchaseUnitID
+                  ? company[0].PurchaseCompanyName
+                  : company[0].SalesCompanyName}
+              </Card.Title>
             </Card.Body>
           </Card>
           <Card>
@@ -66,14 +66,13 @@ const CompanyDetail = () => {
                     <tr>
                       <th>合同编号</th>
                       <th>交货时间</th>
-                      <th>产品名称</th>
-                      <th>发出货量</th>
+                      <th>收货公司</th>
+                      <th>发货公司</th>
                       <th>验证状态</th>
                     </tr>
                   </thead>
                   <tbody>
                     {company.map((t) => {
-                      // 生成随机颜色
                       const random = Math.random();
                       let colorClass;
                       if (random < 0.8) {
@@ -106,18 +105,18 @@ const CompanyDetail = () => {
         </Col>
         <Col md={4}>
           <ListGroup>
-            <ListGroup.Item>人员规模: {company.Employees}</ListGroup.Item>
             <ListGroup.Item>
-              最近上传: {company.LatestContractDate}
+              最近上传: {company[0].ContractDate.substring(0, 10)}
             </ListGroup.Item>
-            <ListGroup.Item>合同数量: {company.ContractSum}</ListGroup.Item>
+            <ListGroup.Item>合同数量: {company.length}</ListGroup.Item>
           </ListGroup>
           <Card className="mt-3">
             <Card.Body>
               <Card.Title>公司地理位置</Card.Title>
-              <div style={{ height: "200px", backgroundColor: "#eee" }}>
-                地图位置
-              </div>
+              <Card.Img
+                style={{ height: "200px", backgroundColor: "#eee" }}
+                src={require("assets/img/map_template.jpg")}
+              ></Card.Img>
             </Card.Body>
           </Card>
         </Col>
