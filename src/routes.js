@@ -59,6 +59,14 @@ var routes = [
     icon: "nc-icon nc-bulb-63",
     component: EVGPT,
   },
+
+  {
+    path: "/charts",
+    layout: "/admin",
+    name: "公司数据",
+    icon: "nc-icon nc-chart-bar-32",
+    component: Charts,
+  },
   {
     path: "/settings",
     layout: "/admin",
@@ -66,13 +74,6 @@ var routes = [
     state: "openComponents",
     icon: "nc-icon nc-attach-87",
     component: Settings,
-  },
-  {
-    path: "/charts",
-    layout: "/admin",
-    name: "Charts",
-    icon: "nc-icon nc-chart-bar-32",
-    component: Charts,
   },
   {
     collapse: true,
