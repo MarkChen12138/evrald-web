@@ -40,7 +40,7 @@ import RegisterPage from "views/Pages/RegisterPage/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 import Database from "views/Database/Database";
 import EVGPT from "views/EVGPT/EVGPT";
-import CompanyDetail from "views/Database/CompanyDetail";
+import Settings from "views/Settings";
 import { Switch } from "react-router-dom/cjs/react-router-dom.min";
 
 var routes = [
@@ -53,18 +53,26 @@ var routes = [
     component: Database,
   },
   {
-    path: "/user-product",
+    path: "/evgpt",
     layout: "/admin",
     name: "EVGPT",
     icon: "nc-icon nc-bulb-63",
     component: EVGPT,
   },
   {
-    path: "/EVGPT",
+    path: "/settings",
     layout: "/admin",
-    name: "Dashboard",
-    icon: "nc-icon nc-chart-pie-35",
-    component: Dashboard,
+    name: "设置",
+    state: "openComponents",
+    icon: "nc-icon nc-attach-87",
+    component: Settings,
+  },
+  {
+    path: "/charts",
+    layout: "/admin",
+    name: "Charts",
+    icon: "nc-icon nc-chart-bar-32",
+    component: Charts,
   },
   {
     collapse: true,
@@ -221,13 +229,7 @@ var routes = [
       },
     ],
   },
-  {
-    path: "/charts",
-    layout: "/admin",
-    name: "Charts",
-    icon: "nc-icon nc-chart-bar-32",
-    component: Charts,
-  },
+
   {
     path: "/calendar",
     layout: "/admin",

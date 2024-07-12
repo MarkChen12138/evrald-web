@@ -99,8 +99,8 @@ $red-navbar: lighten($color-red, 10%);
 //## For each of Bootstrap's buttons, define text, background and border color.
 
 $none: 0 !default;
-$border-thin: 1px !default;
-$border-thick: 2px !default;
+$border-thin: 2px !default;
+$border-thick: 3px !default;
 
 $white-color: #ffffff !default;
 $white-bg: #ffffff !default;
@@ -173,8 +173,8 @@ $padding-zero: 0px !default;
 $margin-bottom: 0 0 10px 0 !default;
 $border-radius-small: 3px !default;
 $border-radius-base: 4px !default;
-$border-radius-large: 6px !default;
-$border-radius-extreme: 10px !default;
+$border-radius-large: 15px !default;
+$border-radius-extreme: 20px !default;
 
 $border-radius-large-top: $border-radius-large $border-radius-large 0 0 !default;
 $border-radius-large-bottom: 0 0 $border-radius-large $border-radius-large !default;

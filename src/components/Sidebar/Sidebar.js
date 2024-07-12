@@ -16,7 +16,7 @@ import {
   Pagination,
   Container,
   Row,
-  Col
+  Col,
 } from "react-bootstrap";
 
 function Sidebar({ routes, image, background }) {
@@ -38,7 +38,7 @@ function Sidebar({ routes, image, background }) {
         initialState = {
           [prop.state]: getCollapseInitialState(prop.views),
           ...getCollapseStates(prop.views),
-          ...initialState
+          ...initialState,
         };
       }
       return null;
@@ -207,7 +207,7 @@ function Sidebar({ routes, image, background }) {
         <div
           className="sidebar-background"
           style={{
-            backgroundImage: "url('" + image + "')"
+            backgroundImage: "url('" + image + "')",
           }}
         ></div>
       </div>
@@ -219,13 +219,13 @@ let linkPropTypes = {
   path: PropTypes.string,
   layout: PropTypes.string,
   name: PropTypes.string,
-  component: PropTypes.oneOfType([PropTypes.func, PropTypes.element])
+  component: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
 };
 
 Sidebar.defaultProps = {
   image: "",
   background: "black",
-  routes: []
+  routes: [],
 };
 
 Sidebar.propTypes = {
@@ -236,13 +236,13 @@ Sidebar.propTypes = {
     "green",
     "orange",
     "red",
-    "purple"
+    "purple",
   ]),
   routes: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.shape({
         ...linkPropTypes,
-        icon: PropTypes.string
+        icon: PropTypes.string,
       }),
       PropTypes.shape({
         collapse: true,
@@ -252,11 +252,11 @@ Sidebar.propTypes = {
         icon: PropTypes.string,
         views: PropTypes.shape({
           ...linkPropTypes,
-          mini: PropTypes.string
-        })
-      })
+          mini: PropTypes.string,
+        }),
+      }),
     ])
-  )
+  ),
 };
 
 export default Sidebar;
