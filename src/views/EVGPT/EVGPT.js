@@ -73,13 +73,13 @@ const EVGPT = () => {
   };
 
   return (
-    <Container fluid className="p-3 main-container">
+    <Container fluid>
       {messages.length === 0 ? (
         <RecommendedQuestions
           handleRecommendationClick={handleRecommendationClick}
         />
       ) : (
-        <ChatArea />
+        <ChatArea style={{ height: 1500 }} />
       )}
       <Form
         onSubmit={(e) => {
@@ -99,6 +99,7 @@ const EVGPT = () => {
           Send
         </Button>
       </Form>
+      <p>sdasdas</p>
     </Container>
   );
 };
