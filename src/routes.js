@@ -34,7 +34,9 @@ import FullScreenMap from "views/Maps/FullScreenMap.js";
 import VectorMap from "views/Maps/VectorMap.js";
 import Charts from "views/Charts.js";
 import Calendar from "views/Calendar.js";
-import UserPage from "views/Pages/UserPage.js";
+import UserPage from "views/Settings/UserPage.js";
+import Accounts from "views/Settings/Accounts.js";
+import OtherSettings from "views/Settings/OtherSettings";
 import LoginPage from "views/Pages/LoginPage.js";
 import RegisterPage from "views/Pages/RegisterPage/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
@@ -66,6 +68,36 @@ var routes = [
     name: "公司数据",
     icon: "nc-icon nc-chart-bar-32",
     component: Charts,
+  },
+  {
+    collapse: true,
+    path: "/settings",
+    name: "设置",
+    state: "openSettings",
+    icon: "nc-icon nc-attach-87",
+    views: [
+      {
+        path: "/user-profile",
+        layout: "/admin",
+        name: "个人资料",
+        mini: "UP",
+        component: UserPage,
+      },
+      {
+        path: "/accounts",
+        layout: "/admin",
+        name: "账号管理",
+        mini: "LP",
+        component: Accounts,
+      },
+      {
+        path: "/other-settings",
+        layout: "/admin",
+        name: "其他设置",
+        mini: "RP",
+        component: OtherSettings,
+      },
+    ],
   },
   {
     path: "/settings",

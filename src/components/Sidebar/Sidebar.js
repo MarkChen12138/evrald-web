@@ -20,6 +20,8 @@ import {
 } from "react-bootstrap";
 
 function Sidebar({ routes, image, background }) {
+  const [CompanyName, setCompanyName] = React.useState("河北常青实业");
+  const [CompanyID, setCompanyID] = React.useState(1);
   // to check for active links and opened collapses
   let location = useLocation();
   // this is for the user collapse
@@ -124,7 +126,7 @@ function Sidebar({ routes, image, background }) {
   };
   return (
     <>
-      <div className="sidebar" data-color={background} data-image={image}>
+      <div className="sidebar" data-color={background}>
         <div className="sidebar-wrapper">
           <div className="logo">
             <a
@@ -142,7 +144,7 @@ function Sidebar({ routes, image, background }) {
               className="simple-text logo-normal"
               href="http://www.creative-tim.com"
             >
-              Creative Tim
+              EVRALD
             </a>
           </div>
           <div className="user">
@@ -150,66 +152,14 @@ function Sidebar({ routes, image, background }) {
               <img alt="..." src={require("assets/img/default-avatar.png")} />
             </div>
             <div className="info">
-              <a
-                className={userCollapseState ? "collapsed" : ""}
-                data-toggle="collapse"
-                href="#pablo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setUserCollapseState(!userCollapseState);
-                }}
-                aria-expanded={userCollapseState}
-              >
-                <span>
-                  Tania Andrew <b className="caret"></b>
-                </span>
+              <a>
+                <span>{CompanyName}</span>
               </a>
-              <Collapse id="collapseExample" in={userCollapseState}>
-                <div>
-                  <Nav as="ul">
-                    <li>
-                      <a
-                        className="profile-dropdown"
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <span className="sidebar-mini">MP</span>
-                        <span className="sidebar-normal">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        className="profile-dropdown"
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <span className="sidebar-mini">EP</span>
-                        <span className="sidebar-normal">Edit Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        className="profile-dropdown"
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <span className="sidebar-mini">S</span>
-                        <span className="sidebar-normal">Settings</span>
-                      </a>
-                    </li>
-                  </Nav>
-                </div>
-              </Collapse>
             </div>
           </div>
           <Nav as="ul">{createLinks(routes)}</Nav>
         </div>
-        <div
-          className="sidebar-background"
-          style={{
-            backgroundImage: "url('" + image + "')",
-          }}
-        ></div>
+        <div className="sidebar-background"></div>
       </div>
     </>
   );
@@ -224,7 +174,7 @@ let linkPropTypes = {
 
 Sidebar.defaultProps = {
   image: "",
-  background: "black",
+  background: "gray",
   routes: [],
 };
 
