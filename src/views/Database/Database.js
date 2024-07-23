@@ -56,7 +56,15 @@ function Database({ match }) {
           exact
           path={match.path}
           render={() => (
-            <Row>{isLoading ? <h1>Loading...</h1> : <AllCompanyInfos />}</Row>
+            <Row>
+              {isLoading ? (
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              ) : (
+                <AllCompanyInfos />
+              )}
+            </Row>
           )}
         />
         <Route path={`${match.path}/company/:id`} component={CompanyDetail} />
