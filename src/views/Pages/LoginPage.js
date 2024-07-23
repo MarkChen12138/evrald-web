@@ -13,10 +13,21 @@ function LoginPage() {
     <Container
       fluid
       className="min-vh-100 d-flex align-items-center p-0"
-      style={{ backgroundColor: "#fff000" }}
+      style={{
+        backgroundColor: "#F0F2F4",
+      }}
     >
       <Row className="g-0 w-100">
-        <Col lg={6} md={6} className="d-none d-md-block">
+        <Col lg={6} md={6} className="d-none d-md-block" style={{}}>
+          {/* <div
+            className="h-100"
+            style={{
+              backgroundImage: `url(${require("assets/img/evrald.jpg")})`,
+              backgroundSize: "contain",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          /> */}
           <h1 className="text-center">商品行业智能领先数据库</h1>
           <h5 className="text-center">
             智能化登记所有数据，利用区块链技术固证，让所有数据可溯源，不可篡改，安全且高效。
@@ -25,25 +36,21 @@ function LoginPage() {
           <div
             className="h-100"
             style={{
-              backgroundImage: `url(${require("assets/img/login.svg")})`,
-              backgroundSize: "cover",
+              backgroundImage: `url(${require("assets/img/login-background.jpg")})`,
+              backgroundSize: "contain",
               backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
             }}
           />
         </Col>
-        <Col
-          lg={6}
-          md={6}
-          className="mx-auto"
-          style={{ backgroundColor: "#fff000" }}
-        >
+        <Col lg={6} md={6} className="mx-auto">
           <Container>
             <Row>
               <Col className="mx-auto" xl="6" lg="8" md="12">
                 <Form className="form" method="">
                   <Card className={`card-login ${cardClasses}`}>
                     <Card.Header>
-                      <h3 className="header text-center">Login</h3>
+                      <h3 className="header text-center">登录</h3>
                     </Card.Header>
                     <Card.Body>
                       <Form.Group>

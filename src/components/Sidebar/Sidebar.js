@@ -129,15 +129,9 @@ function Sidebar({ routes, image, background }) {
       <div className="sidebar" data-color={background}>
         <div className="sidebar-wrapper">
           <div className="logo">
-            <a
-              className="simple-text logo-mini"
-              href="http://www.creative-tim.com"
-            >
+            <a className="simple-text logo-mini">
               <div className="logo-img">
-                <img
-                  src={require("assets/img/logo.svg").default}
-                  alt="react-logo"
-                />
+                <img src={require("assets/img/evrald-logo.jpg")} />
               </div>
             </a>
             <a
