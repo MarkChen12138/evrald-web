@@ -46,8 +46,10 @@ function AdminFooter() {
             </ul>
             <p className="copyright text-center">
               © <script>document.write(new Date().getFullYear())</script>
-              <a href="http://www.creative-tim.com">Creative Tim</a>, made with
-              love for a better web
+              <a href="http://www.creative-tim.com">
+                2024广州市天秤文化科技有限公司
+              </a>
+              Evrald数据库
             </p>
           </nav>
         </Container>

@@ -73,35 +73,79 @@ const EVGPT = () => {
   };
 
   return (
-    <Container fluid>
-      {messages.length === 0 ? (
-        <RecommendedQuestions
-          handleRecommendationClick={handleRecommendationClick}
-        />
-      ) : (
-        <ChatArea style={{ height: 1500 }} />
-      )}
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSend();
-        }}
-        className="d-flex chat-input"
-      >
-        <Form.Control
-          type="text"
-          placeholder="Type a message"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="mr-2"
-        />
-        <Button variant="primary" type="submit">
-          Send
-        </Button>
-      </Form>
-      <p>sdasdas</p>
-    </Container>
+    <>
+      <Container fluid>
+        {messages.length === 0 ? (
+          <RecommendedQuestions
+            handleRecommendationClick={handleRecommendationClick}
+          />
+        ) : (
+          <ChatArea style={{ height: 1500 }} />
+        )}
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+          className="d-flex chat-input"
+        >
+          <Form.Control
+            type="text"
+            placeholder="Type a message"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="mr-2"
+          />
+          <Button variant="primary" type="submit">
+            Send
+          </Button>
+        </Form>
+      </Container>
+      <AdminFooter />
+    </>
   );
 };
+
+function AdminFooter() {
+  return (
+    <>
+      <footer className="footer">
+        <Container fluid className="pl-4 ml-2">
+          <nav>
+            <ul className="footer-menu">
+              <li>
+                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                  Company
+                </a>
+              </li>
+              <li>
+                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                  Portfolio
+                </a>
+              </li>
+              <li>
+                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                  Blog
+                </a>
+              </li>
+            </ul>
+            <p className="copyright text-center">
+              © <script>document.write(new Date().getFullYear())</script>
+              <a href="http://www.creative-tim.com">
+                2024广州市天秤文化科技有限公司
+              </a>
+              Evrald数据库
+            </p>
+          </nav>
+        </Container>
+      </footer>
+    </>
+  );
+}
 
 export default EVGPT;
