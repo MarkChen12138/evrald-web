@@ -14,7 +14,7 @@ import {
   Col
 } from "react-bootstrap";
 
-function UserPage() {
+function OtherSettings() {
   return (
     <>
       <Container fluid>
@@ -221,4 +221,4 @@ function UserPage() {
   );
 }
 
-export default UserPage;
+export default OtherSettings;

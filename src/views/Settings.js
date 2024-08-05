@@ -21,7 +21,7 @@ import {
   Col,
 } from "react-bootstrap";
 
-function Dashboard() {
+function Settings() {
   return (
     <>
       <Container fluid>
@@ -770,4 +770,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Settings;

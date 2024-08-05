@@ -73,7 +73,7 @@ function Charts() {
 
   if (loading) {
     return (
-      <div class="spinner-grow" role="status">
+      <div class="spinner-border" role="status">
         <span class="sr-only">Loading...</span>
       </div>
     );
